@@ -57,52 +57,65 @@ GRUB2_INSTALL_TARGET = NO
 endif
 GRUB2_CPE_ID_VENDOR = gnu
 
-GRUB2_BUILTIN_MODULES = $(call qstrip,$(BR2_TARGET_GRUB2_BUILTIN_MODULES))
-GRUB2_BUILTIN_CONFIG = $(call qstrip,$(BR2_TARGET_GRUB2_BUILTIN_CONFIG))
+GRUB2_BUILTIN_MODULES_PC = $(call qstrip,$(BR2_TARGET_GRUB2_BUILTIN_MODULES_PC))
+GRUB2_BUILTIN_MODULES_EFI = $(call qstrip,$(BR2_TARGET_GRUB2_BUILTIN_MODULES_EFI))
+GRUB2_BUILTIN_CONFIG_PC = $(call qstrip,$(BR2_TARGET_GRUB2_BUILTIN_CONFIG_PC))
+GRUB2_BUILTIN_CONFIG_EFI = $(call qstrip,$(BR2_TARGET_GRUB2_BUILTIN_CONFIG_EFI))
 GRUB2_BOOT_PARTITION = $(call qstrip,$(BR2_TARGET_GRUB2_BOOT_PARTITION))
 
 ifeq ($(BR2_TARGET_GRUB2_I386_PC),y)
-GRUB2_IMAGE = $(BINARIES_DIR)/grub.img
-GRUB2_CFG = $(TARGET_DIR)/boot/grub/grub.cfg
-GRUB2_PREFIX = ($(GRUB2_BOOT_PARTITION))/boot/grub
-GRUB2_TUPLE = i386-pc
-GRUB2_TARGET = i386
-GRUB2_PLATFORM = pc
-else ifeq ($(BR2_TARGET_GRUB2_I386_EFI),y)
-GRUB2_IMAGE = $(BINARIES_DIR)/efi-part/EFI/BOOT/bootia32.efi
-GRUB2_CFG = $(BINARIES_DIR)/efi-part/EFI/BOOT/grub.cfg
-GRUB2_PREFIX = /EFI/BOOT
-GRUB2_TUPLE = i386-efi
-GRUB2_TARGET = i386
-GRUB2_PLATFORM = efi
-else ifeq ($(BR2_TARGET_GRUB2_X86_64_EFI),y)
-GRUB2_IMAGE = $(BINARIES_DIR)/efi-part/EFI/BOOT/bootx64.efi
-GRUB2_CFG = $(BINARIES_DIR)/efi-part/EFI/BOOT/grub.cfg
-GRUB2_PREFIX = /EFI/BOOT
-GRUB2_TUPLE = x86_64-efi
-GRUB2_TARGET = x86_64
-GRUB2_PLATFORM = efi
-else ifeq ($(BR2_TARGET_GRUB2_ARM_UBOOT),y)
-GRUB2_IMAGE = $(BINARIES_DIR)/boot-part/grub/grub.img
-GRUB2_CFG = $(BINARIES_DIR)/boot-part/grub/grub.cfg
-GRUB2_PREFIX = ($(GRUB2_BOOT_PARTITION))/boot/grub
-GRUB2_TUPLE = arm-uboot
-GRUB2_TARGET = arm
-GRUB2_PLATFORM = uboot
-else ifeq ($(BR2_TARGET_GRUB2_ARM_EFI),y)
-GRUB2_IMAGE = $(BINARIES_DIR)/efi-part/EFI/BOOT/bootarm.efi
-GRUB2_CFG = $(BINARIES_DIR)/efi-part/EFI/BOOT/grub.cfg
-GRUB2_PREFIX = /EFI/BOOT
-GRUB2_TUPLE = arm-efi
-GRUB2_TARGET = arm
-GRUB2_PLATFORM = efi
-else ifeq ($(BR2_TARGET_GRUB2_ARM64_EFI),y)
-GRUB2_IMAGE = $(BINARIES_DIR)/efi-part/EFI/BOOT/bootaa64.efi
-GRUB2_CFG = $(BINARIES_DIR)/efi-part/EFI/BOOT/grub.cfg
-GRUB2_PREFIX = /EFI/BOOT
-GRUB2_TUPLE = arm64-efi
-GRUB2_TARGET = aarch64
-GRUB2_PLATFORM = efi
+GRUB2_I386_PC_IMAGE = $(BINARIES_DIR)/grub.img
+GRUB2_I386_PC_CFG = $(TARGET_DIR)/boot/grub/grub.cfg
+GRUB2_I386_PC_PREFIX = ($(GRUB2_BOOT_PARTITION))/boot/grub
+GRUB2_I386_PC_TARGET = i386
+GRUB2_I386_PC_PLATFORM = pc
+GRUB2_I386_PC_BUILTIN = PC
+GRUB2_TUPLES += i386-pc
+endif
+ifeq ($(BR2_TARGET_GRUB2_I386_EFI),y)
+GRUB2_I386_EFI_IMAGE = $(BINARIES_DIR)/efi-part/EFI/BOOT/bootia32.efi
+GRUB2_I386_EFI_CFG = $(BINARIES_DIR)/efi-part/EFI/BOOT/grub.cfg
+GRUB2_I386_EFI_PREFIX = /EFI/BOOT
+GRUB2_I386_EFI_TARGET = i386
+GRUB2_I386_EFI_PLATFORM = efi
+GRUB2_I386_EFI_BUILTIN = EFI
+GRUB2_TUPLES += i386-efi
+endif
+ifeq ($(BR2_TARGET_GRUB2_X86_64_EFI),y)
+GRUB2_X86_64_EFI_IMAGE = $(BINARIES_DIR)/efi-part/EFI/BOOT/bootx64.efi
+GRUB2_X86_64_EFI_CFG = $(BINARIES_DIR)/efi-part/EFI/BOOT/grub.cfg
+GRUB2_X86_64_EFI_PREFIX = /EFI/BOOT
+GRUB2_X86_64_EFI_TARGET = x86_64
+GRUB2_X86_64_EFI_PLATFORM = efi
+GRUB2_X86_64_EFI_BUILTIN = EFI
+GRUB2_TUPLES += x86_64-efi
+endif
+ifeq ($(BR2_TARGET_GRUB2_ARM_UBOOT),y)
+GRUB2_ARM_UBOOT_IMAGE = $(BINARIES_DIR)/boot-part/grub/grub.img
+GRUB2_ARM_UBOOT_CFG = $(BINARIES_DIR)/boot-part/grub/grub.cfg
+GRUB2_ARM_UBOOT_PREFIX = ($(GRUB2_BOOT_PARTITION))/boot/grub
+GRUB2_ARM_UBOOT_TARGET = arm
+GRUB2_ARM_UBOOT_PLATFORM = uboot
+GRUB2_ARM_UBOOT_BUILTIN = PC
+GRUB2_TUPLES += arm-uboot
+endif
+ifeq ($(BR2_TARGET_GRUB2_ARM_EFI),y)
+GRUB2_ARM_EFI_IMAGE = $(BINARIES_DIR)/efi-part/EFI/BOOT/bootarm.efi
+GRUB2_ARM_EFI_CFG = $(BINARIES_DIR)/efi-part/EFI/BOOT/grub.cfg
+GRUB2_ARM_EFI_PREFIX = /EFI/BOOT
+GRUB2_ARM_EFI_TARGET = arm
+GRUB2_ARM_EFI_PLATFORM = efi
+GRUB2_ARM_EFI_BUILTIN = EFI
+GRUB2_TUPLES += arm-efi
+endif
+ifeq ($(BR2_TARGET_GRUB2_ARM64_EFI),y)
+GRUB2_ARM64_EFI_IMAGE = $(BINARIES_DIR)/efi-part/EFI/BOOT/bootaa64.efi
+GRUB2_ARM64_EFI_CFG = $(BINARIES_DIR)/efi-part/EFI/BOOT/grub.cfg
+GRUB2_ARM64_EFI_PREFIX = /EFI/BOOT
+GRUB2_ARM64_EFI_TARGET = aarch64
+GRUB2_ARM64_EFI_PLATFORM = efi
+GRUB2_ARM64_EFI_BUILTIN = EFI
+GRUB2_TUPLES += arm64-efi
 endif
 
 # Grub2 is kind of special: it considers CC, LD and so on to be the
@@ -128,8 +141,10 @@ GRUB2_CONF_ENV = \
 	TARGET_STRIP="$(TARGET_CROSS)strip"
 
 GRUB2_CONF_OPTS = \
-	--target=$(GRUB2_TARGET) \
-	--with-platform=$(GRUB2_PLATFORM) \
+	--host=$(GNU_TARGET_NAME) \
+	--build=$(GNU_HOST_NAME) \
+	--target=$(GRUB2_$(call UPPERCASE,$(tuple))_TARGET) \
+	--with-platform=$(GRUB2_$(call UPPERCASE,$(tuple))_PLATFORM) \
 	--prefix=/ \
 	--exec-prefix=/ \
 	--disable-grub-mkfont \
@@ -147,34 +162,46 @@ HOST_GRUB2_CONF_OPTS = \
 	--enable-libzfs=no \
 	--disable-werror
 
-ifeq ($(BR2_TARGET_GRUB2_I386_PC),y)
-define GRUB2_IMAGE_INSTALL_ELTORITO
-	cat $(HOST_DIR)/lib/grub/$(GRUB2_TUPLE)/cdboot.img $(GRUB2_IMAGE) > \
-		$(BINARIES_DIR)/grub-eltorito.img
+define GRUB2_CONFIGURE_CMDS
+	$(foreach tuple, $(GRUB2_TUPLES), \
+		mkdir -p $(@D)/build-$(tuple) ; \
+		cd $(@D)/build-$(tuple) ; \
+		$(TARGET_CONFIGURE_OPTS) \
+		$(TARGET_CONFIGURE_ARGS) \
+		$(GRUB2_CONF_ENV) \
+		../configure \
+			$(GRUB2_CONF_OPTS)
+	)
 endef
-endif
+
+define GRUB2_BUILD_CMDS
+	$(foreach tuple, $(GRUB2_TUPLES), \
+		$(TARGET_MAKE_ENV) $(MAKE) -C $(@D)/build-$(tuple)
+	)
+endef
 
 define GRUB2_INSTALL_IMAGES_CMDS
-	mkdir -p $(dir $(GRUB2_IMAGE))
-	$(HOST_DIR)/usr/bin/grub-mkimage \
-		-d $(@D)/grub-core/ \
-		-O $(GRUB2_TUPLE) \
-		-o $(GRUB2_IMAGE) \
-		-p "$(GRUB2_PREFIX)" \
-		$(if $(GRUB2_BUILTIN_CONFIG),-c $(GRUB2_BUILTIN_CONFIG)) \
-		$(GRUB2_BUILTIN_MODULES)
-	mkdir -p $(dir $(GRUB2_CFG))
-	$(INSTALL) -D -m 0644 boot/grub2/grub.cfg $(GRUB2_CFG)
-	$(GRUB2_IMAGE_INSTALL_ELTORITO)
+	$(foreach tuple, $(GRUB2_TUPLES), \
+		mkdir -p $(dir $(GRUB2_$(call UPPERCASE,$(tuple))_IMAGE)) ; \
+		$(HOST_DIR)/usr/bin/grub-mkimage \
+			-d $(@D)/build-$(tuple)/grub-core/ \
+			-O $(tuple) \
+			-o $(GRUB2_$(call UPPERCASE,$(tuple))_IMAGE) \
+			-p "$(GRUB2_$(call UPPERCASE,$(tuple))_PREFIX)" \
+			$(if $(GRUB2_BUILTIN_CONFIG_$(GRUB2_$(call UPPERCASE,$(tuple))_BUILTIN)), \
+				-c $(GRUB2_BUILTIN_CONFIG_$(GRUB2_$(call UPPERCASE,$(tuple))_BUILTIN))) \
+			$(GRUB2_BUILTIN_MODULES_$(GRUB2_$(call UPPERCASE,$(tuple))_BUILTIN)) ; \
+		$(INSTALL) -D -m 0644 boot/grub2/grub.cfg $(GRUB2_$(call UPPERCASE,$(tuple))_CFG) ; \
+		$(if $(findstring $(GRUB2_$(call UPPERCASE,$(tuple))_PLATFORM), pc), \
+			cat $(HOST_DIR)/lib/grub/$(tuple)/cdboot.img $(GRUB2_$(call UPPERCASE,$(tuple))_IMAGE) > \
+				$(BINARIES_DIR)/grub-eltorito.img, \
+		) \
+		$(if $(findstring $(GRUB2_$(call UPPERCASE,$(tuple))_PLATFORM), efi), \
+			echo $(notdir $(GRUB2_$(call UPPERCASE,$(tuple))_IMAGE)) > \
+				$(BINARIES_DIR)/efi-part/startup.nsh \
+		)
+	)
 endef
 
-ifeq ($(GRUB2_PLATFORM),efi)
-define GRUB2_EFI_STARTUP_NSH
-	echo $(notdir $(GRUB2_IMAGE)) > \
-		$(BINARIES_DIR)/efi-part/startup.nsh
-endef
-GRUB2_POST_INSTALL_IMAGES_HOOKS += GRUB2_EFI_STARTUP_NSH
-endif
-
-$(eval $(autotools-package))
+$(eval $(generic-package))
 $(eval $(host-autotools-package))
