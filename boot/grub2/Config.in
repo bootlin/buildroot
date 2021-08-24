@@ -27,9 +27,6 @@ config BR2_TARGET_GRUB2
 
 if BR2_TARGET_GRUB2
 
-choice
-	prompt "Platform"
-
 config BR2_TARGET_GRUB2_I386_PC
 	bool "i386-pc"
 	depends on BR2_i386 || BR2_x86_64
@@ -76,12 +73,10 @@ config BR2_TARGET_GRUB2_ARM64_EFI
 	  Aarch64 platform and you want to boot Grub 2 as an EFI
 	  application.
 
-endchoice
-
 if BR2_TARGET_GRUB2_I386_PC || BR2_TARGET_GRUB2_ARM_UBOOT
 
 config BR2_TARGET_GRUB2_BOOT_PARTITION
-	string "boot partition"
+	string "boot partition GRUB"
 	default "hd0,msdos1"
 	help
 	  Specify the partition where the /boot/grub/grub.cfg file is
@@ -89,24 +84,39 @@ config BR2_TARGET_GRUB2_BOOT_PARTITION
 	  first disk if using a legacy partition table, or 'hd0,gpt1'
 	  if using GPT partition table.
 
-endif # BR2_TARGET_GRUB2_I386_PC || BR2_TARGET_GRUB2_ARM_UBOOT
-
-config BR2_TARGET_GRUB2_BUILTIN_MODULES
-	string "builtin modules"
+config BR2_TARGET_GRUB2_BUILTIN_MODULES_PC
+	string "builtin modules for GRUB on legacy BIOS or ARM U-boot"
 	default "boot linux ext2 fat squash4 part_msdos part_gpt normal biosdisk" if BR2_TARGET_GRUB2_I386_PC
-	default "boot linux ext2 fat squash4 part_msdos part_gpt normal efi_gop" \
-		if BR2_TARGET_GRUB2_I386_EFI || BR2_TARGET_GRUB2_X86_64_EFI || \
-		   BR2_TARGET_GRUB2_ARM_EFI  || BR2_TARGET_GRUB2_ARM64_EFI
 	default "linux ext2 fat part_msdos normal" if BR2_TARGET_GRUB2_ARM_UBOOT
 
-config BR2_TARGET_GRUB2_BUILTIN_CONFIG
-	string "builtin config"
+
+config BR2_TARGET_GRUB2_BUILTIN_CONFIG_PC
+	string "builtin config for GRUB on legacy BIOS or ARM U-boot"
 	help
 	  Path to a Grub 2 configuration file that will be embedded
 	  into the Grub image itself. This allows to set the root
 	  device and other configuration parameters, but however menu
 	  entries cannot be described in this embedded configuration.
 
+endif # BR2_TARGET_GRUB2_I386_PC || BR2_TARGET_GRUB2_ARM_UBOOT
+
+if BR2_TARGET_GRUB2_I386_EFI || BR2_TARGET_GRUB2_X86_64_EFI || \
+   BR2_TARGET_GRUB2_ARM_EFI  || BR2_TARGET_GRUB2_ARM64_EFI
+
+config BR2_TARGET_GRUB2_BUILTIN_MODULES_EFI
+	string "builtin modules for GRUB on EFI"
+	default "boot linux ext2 fat squash4 part_msdos part_gpt normal efi_gop"
+
+
+config BR2_TARGET_GRUB2_BUILTIN_CONFIG_EFI
+	string "builtin config for GRUB on EFI"
+	help
+	  Path to a Grub 2 configuration file that will be embedded
+	  into the Grub image itself. This allows to set the root
+	  device and other configuration parameters, but however menu
+	  entries cannot be described in this embedded configuration.
+
+endif
 config BR2_TARGET_GRUB2_INSTALL_TOOLS
 	bool "install tools"
 	help
