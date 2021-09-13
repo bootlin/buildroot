@@ -1503,6 +1503,9 @@ N:	Koen Martens <gmc@sonologic.nl>
 F:	package/capnproto/
 F:	package/linuxconsoletools/
 
+N:	Köry Maincent <kory.maincent@bootlin.com>
+F:	package/edk2-images
+
 N:	Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 F:	package/bcusdk/
 F:	package/libpthsem/

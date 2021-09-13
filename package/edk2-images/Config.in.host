@@ -1,0 +1,26 @@
+config BR2_PACKAGE_HOST_EDK2_IMAGES
+	bool "host EFI BIOS binaries"
+	help
+	  Downloads and installs pre-compiled EDK2 EFI BIOS images.
+	  They are typically useful to allow Qemu to emulate an x86 or
+	  x86-64 system with an EFI-compliant BIOS.
+
+	  https://www.kraxel.org/repos/jenkins/edk2/
+
+if BR2_PACKAGE_HOST_EDK2_IMAGES
+
+choice
+	prompt "EFI Architecture"
+	default BR2_PACKAGE_HOST_EDK2_IMAGES_IA32
+	help
+	  select the desired architecture
+
+config BR2_PACKAGE_HOST_EDK2_IMAGES_IA32
+	bool "ia32"
+
+config BR2_PACKAGE_HOST_EDK2_IMAGES_X64
+	bool "x64"
+
+endchoice
+
+endif
