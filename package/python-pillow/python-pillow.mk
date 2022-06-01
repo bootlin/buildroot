@@ -87,3 +87,4 @@ define PYTHON_PILLOW_INSTALL_TARGET_CMDS
 endef
 
 $(eval $(python-package))
+$(eval $(host-python-package))
