@@ -1,0 +1,70 @@
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * samples/kmemleak/kmemleak-test.c
+ *
+ * Copyright (C) 2008 ARM Limited
+ * Written by Catalin Marinas <catalin.marinas@arm.com>
+ */
+
+#define pr_fmt(fmt) "locking: " fmt
+
+#include <linux/init.h>
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/slab.h>
+#include <linux/workqueue.h>
+#include <linux/mutex.h>
+
+static void my_work_fn(struct work_struct *work);
+static DECLARE_WORK(appldata_work, my_work_fn);
+
+static DEFINE_MUTEX(mutex1);
+static DEFINE_MUTEX(mutex2);
+
+static void do_work(struct mutex *mutex)
+{
+	mutex_lock(mutex);
+	pr_info("Doing work !\n");
+	mutex_unlock(mutex);
+}
+
+static void do_atomic_work(void)
+{
+	unsigned long flags;
+	void *data;
+
+	local_irq_save(flags);
+
+	data = kmalloc(1024, GFP_KERNEL);
+	/* Do something with the data */
+	kfree(data);
+
+	local_irq_restore(flags);
+}
+
+static void my_work_fn(struct work_struct *work)
+{
+	mutex_lock(&mutex1);
+	do_work(&mutex2);
+	mutex_unlock(&mutex1);
+}
+
+static int __init locking_init(void)
+{
+	schedule_work(&appldata_work);
+
+	mutex_lock(&mutex2);
+	do_work(&mutex1);
+	mutex_unlock(&mutex2);
+
+	return 0;
+}
+
+static void __exit locking_exit(void)
+{
+	do_atomic_work();
+}
+
+module_init(locking_init);
+module_exit(locking_exit);
+MODULE_LICENSE("GPL");
