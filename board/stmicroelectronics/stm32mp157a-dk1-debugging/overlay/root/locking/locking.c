@@ -1,10 +1,4 @@
 // SPDX-License-Identifier: GPL-2.0-only
-/*
- * samples/kmemleak/kmemleak-test.c
- *
- * Copyright (C) 2008 ARM Limited
- * Written by Catalin Marinas <catalin.marinas@arm.com>
- */
 
 #define pr_fmt(fmt) "locking: " fmt
 

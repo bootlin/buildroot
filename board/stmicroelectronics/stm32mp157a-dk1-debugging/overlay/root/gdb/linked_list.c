@@ -1,10 +1,12 @@
+/* SPDX-License-Identifier: GPL-2.0-only */
+
 #include <sys/queue.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define WORD_LIST	"/root/gdb/word_list"
+#define WORD_LIST	"./word_list"
 
 struct name {
 	char *name;
@@ -13,11 +15,20 @@ struct name {
 
 SLIST_HEAD(name_list, name) name_list;
 
+static void insert_name(const char *str)
+{
+	struct name *name;
+
+	memset(name, 0x0, sizeof(*name));
+
+	name->name = strdup(str);
+	SLIST_INSERT_HEAD(&name_list, name, next);
+}
+
 static int load_words(const char *word_file)
 {
 	size_t read;
 	char *line;
-	struct name *name;
 	size_t len;
 	FILE *file = fopen(word_file, "r");
 	if (!file) {
@@ -26,14 +37,7 @@ static int load_words(const char *word_file)
 	}
 
 	while ((read = getline(&line, &len, file)) != -1) {
-		name = malloc(sizeof(*name));
-		if (!name)
-			return 1;
-
-		memset(name, 0x0, sizeof(*name));
-
-		name->name = strdup(line);
-		SLIST_INSERT_HEAD(&name_list, name, next);
+		insert_name(line);
 	}
 
 	return 0;

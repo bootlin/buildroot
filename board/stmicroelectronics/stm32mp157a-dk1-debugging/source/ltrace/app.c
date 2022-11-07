@@ -19,7 +19,7 @@ int main(int argc, char **argv)
 
 	al_build_user_list(ctx);
 
-	ret = al_authent_user(ctx, "user", "password");
+	ret = al_authent_user(ctx, "user", "mysecretpassword");
 	if (ret) {
 		printf("Failed to authenticate user\n");
 		return EXIT_FAILURE;
