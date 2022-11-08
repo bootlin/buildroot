@@ -1,0 +1,30 @@
+From 199ebe5ecd2dd2e57a6322956e0e407eb359b8c8 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <clement.leger@bootlin.com>
+Date: Thu, 3 Nov 2022 14:22:33 +0100
+Subject: [PATCH 3/3] kmemleak: use %pK instead of %p to allow displaying the
+ backtrace
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Clément Léger <clement.leger@bootlin.com>
+---
+ mm/kmemleak.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/kmemleak.c b/mm/kmemleak.c
+index 92a2d4885808..e362d8978ecb 100644
+--- a/mm/kmemleak.c
++++ b/mm/kmemleak.c
+@@ -348,7 +348,7 @@ static void print_unreferenced(struct seq_file *seq,
+ 
+ 	for (i = 0; i < object->trace_len; i++) {
+ 		void *ptr = (void *)object->trace[i];
+-		warn_or_seq_printf(seq, "    [<%p>] %pS\n", ptr, ptr);
++		warn_or_seq_printf(seq, "    [<%pK>] %pS\n", ptr, ptr);
+ 	}
+ }
+ 
+-- 
+2.38.1
+
