@@ -15,29 +15,41 @@ struct name {
 
 SLIST_HEAD(name_list, name) name_list;
 
-static void insert_name(const char *str)
+static int insert_name(const char *word)
 {
 	struct name *name;
+	char str[10];
 
-	memset(name, 0x0, sizeof(*name));
+	name = malloc(sizeof(*name));
+	if (!name)
+		return 1;
+
+	/* Copy word into a temporary string before duplicating */
+	strcpy(str, word);
 
 	name->name = strdup(str);
 	SLIST_INSERT_HEAD(&name_list, name, next);
+
+	return 0;
 }
 
 static int load_words(const char *word_file)
 {
+	FILE *file;
 	size_t read;
 	char *line;
 	size_t len;
-	FILE *file = fopen(word_file, "r");
+
+	file = fopen(word_file, "r");
 	if (!file) {
 		perror("Failed to open word list");
 		return 1;
 	}
 
 	while ((read = getline(&line, &len, file)) != -1) {
-		insert_name(line);
+		if (insert_name(line))
+			return 1;
+
 	}
 
 	return 0;
