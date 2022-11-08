@@ -1,3 +1,10 @@
+image boot.ext4 {
+	ext4 {}
+
+	mountpoint = boot_part/
+	size = 32M
+}
+
 image sdcard.img {
 	hdimage {
 		partition-table-type = "gpt"
@@ -16,8 +23,8 @@ image sdcard.img {
 		size = 2M
 	}
 
-	partition rootfs {
-		image = "rootfs.ext4"
-		bootable = "yes"
+	partition boot {
+		bootable = "true"
+		image = "boot.ext4"
 	}
 }

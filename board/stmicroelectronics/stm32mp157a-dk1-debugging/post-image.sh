@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -eu
+
 #
 # atf_image extracts the ATF binary image from DTB_FILE_NAME that appears in
 # BR2_TARGET_ARM_TRUSTED_FIRMWARE_ADDITIONAL_VARIABLES in ${BR_CONFIG},
@@ -21,16 +23,33 @@ atf_image()
 
 main()
 {
+	local BOARD_DIR="board/stmicroelectronics/stm32mp157a-dk1-debugging"
 	local ATFBIN="$(atf_image)"
 	local GENIMAGE_CFG="$(mktemp --suffix genimage.cfg)"
 	local GENIMAGE_TMP="${BUILD_DIR}/genimage.tmp"
+	local EXTLINUXCONF="${BOARD_DIR}/extlinux.conf"
+	local BOOT_DIR="${BINARIES_DIR}/boot_part"
 
 	sed -e "s/%ATFBIN%/${ATFBIN}/" \
-		board/stmicroelectronics/stm32mp157a-dk1-debugging/genimage.cfg.template > ${GENIMAGE_CFG}
+		${BOARD_DIR}/genimage.cfg.template > ${GENIMAGE_CFG}
 
-	support/scripts/genimage.sh -c ${GENIMAGE_CFG}
+	cp ${EXTLINUXCONF} ${BINARIES_DIR}
+	mkdir -p ${BOOT_DIR}/boot/extlinux
+	cp ${EXTLINUXCONF} ${BOOT_DIR}/boot/extlinux/
+	cp ${BINARIES_DIR}/zImage ${BOOT_DIR}/boot/
+	cp ${BINARIES_DIR}/stm32mp157a-dk1.dtb ${BOOT_DIR}/boot/
 
-	rm -f ${GENIMAGE_CFG}
+	GENIMAGE_TMP="${BUILD_DIR}/genimage.tmp"
+	rm -rf ${GENIMAGE_TMP}
+
+	genimage \
+	--rootpath "${BINARIES_DIR}"     \
+	--tmppath "${GENIMAGE_TMP}"    \
+	--inputpath "${BINARIES_DIR}"  \
+	--outputpath "${BINARIES_DIR}" \
+	--config "${GENIMAGE_CFG}"
+
+	rm -f ${GENIMAGE_CFG} ${BOOT_DIR}
 
 	exit $?
 }
