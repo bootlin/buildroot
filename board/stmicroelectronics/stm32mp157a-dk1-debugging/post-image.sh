@@ -49,7 +49,7 @@ main()
 	--outputpath "${BINARIES_DIR}" \
 	--config "${GENIMAGE_CFG}"
 
-	rm -f ${GENIMAGE_CFG} ${BOOT_DIR}
+	rm -rf ${GENIMAGE_CFG} ${BOOT_DIR}
 
 	exit $?
 }
