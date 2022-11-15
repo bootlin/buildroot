@@ -3,6 +3,7 @@ BR2_cortex_a7=y
 BR2_TOOLCHAIN_EXTERNAL=y
 BR2_TOOLCHAIN_EXTERNAL_BOOTLIN=y
 BR2_TOOLCHAIN_EXTERNAL_GDB_SERVER_COPY=y
+# BR2_STRIP_strip is not set
 BR2_GLOBAL_PATCH_DIR="board/stmicroelectronics/stm32mp157a-dk1-debugging/patches/"
 BR2_TARGET_GENERIC_ROOT_PASSWD="root"
 BR2_ROOTFS_OVERLAY="board/stmicroelectronics/stm32mp157a-dk1-debugging/overlay/"
