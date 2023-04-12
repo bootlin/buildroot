@@ -4,12 +4,13 @@
 #
 ################################################################################
 
-OPTEE_TEST_VERSION = 3.18.0
+OPTEE_TEST_VERSION = 3.20.0
 OPTEE_TEST_SITE = $(call github,OP-TEE,optee_test,$(OPTEE_TEST_VERSION))
 OPTEE_TEST_LICENSE = GPL-2.0, BSD-2-Clause,
 OPTEE_TEST_LICENSE_FILES = LICENSE.md
-
 OPTEE_TEST_DEPENDENCIES = optee-client optee-os
+
+BR_NO_CHECK_HASH_FOR += $(OPTEE_TEST_SOURCE)
 
 ifeq ($(BR2_PACKAGE_LIBOPENSSL),y)
 OPTEE_TEST_DEPENDENCIES += libopenssl
