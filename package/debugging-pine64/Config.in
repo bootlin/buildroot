@@ -1,0 +1,6 @@
+config BR2_PACKAGE_DEBUGGING_PINE64
+	bool "debugging pine64"
+	help
+	  Miscellaneous utilities specific to the bootlin debugging training on Pine64
+
+	  https://bootlin.com/training/debugging/
