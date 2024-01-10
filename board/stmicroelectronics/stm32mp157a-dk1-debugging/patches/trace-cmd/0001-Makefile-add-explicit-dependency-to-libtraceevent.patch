@@ -1,0 +1,55 @@
+From 98958b9b127352b56b9c73d7d6bcd1923c9460f1 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Alexis=20Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+Date: Wed, 10 Jan 2024 10:29:01 +0100
+Subject: [PATCH] Makefile: add explicit dependency to libtraceevent
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+From: Alexis Lothoré <alexis.lothore@bootlin.com>
+
+trace-cmd build, when built on multi-core machine and with python enabled,
+leads to the following build error during ctracecmd.so build:
+
+/home/alexis/debugging-labs/buildroot/output/host/bin/arm-linux-gcc
+--shared
+/home/alexis/debugging-labs/buildroot/output/build/trace-cmd-2.9.7/lib/trace-cmd/libtracecmd.a
+ctracecmd_wrap.o -o ctracecmd.so
+-L/home/alexis/debugging-labs/buildroot/output/build/trace-cmd-2.9.7/lib/trace-cmd
+-ltracecmd
+-L/home/alexis/debugging-labs/buildroot/output/build/trace-cmd-2.9.7/lib/traceevent
+-ltraceevent
+-L/home/alexis/debugging-labs/buildroot/output/build/trace-cmd-2.9.7/lib/tracefs
+-ltracefs
+/home/alexis/debugging-labs/buildroot/output/host/opt/ext-toolchain/bin/../lib/gcc/arm-buildroot-linux-gnueabihf/11.2.0/../../../../arm-buildroot-linux-gnueabihf/bin/ld:
+cannot find -ltraceevent
+
+This error is due to lack of an explicit dependency to libtraceevent.so in
+ctracecmd.so recipe, so the latter may be building while the first one is
+not ready yet. Since libtraceevent is still somewhere in the dependency
+chain of the "all" recipe, the next build may pass nonetheless.
+
+Fix this build race by adding an explicit dependency between ctracecmd.so
+and libtraceevent.a
+
+Signed-off-by: Alexis Lothoré <alexis.lothore@bootlin.com>
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 2c4b46db5fcd..99c19bf62ab8 100644
+--- a/Makefile
++++ b/Makefile
+@@ -602,7 +602,7 @@ export PYTHON_INCLUDES
+ export PYTHON_LDFLAGS
+ export PYGTK_CFLAGS
+ 
+-ctracecmd.so: force $(LIBTRACECMD_STATIC)
++ctracecmd.so: force $(LIBTRACECMD_STATIC) $(LIBTRACEEVENT_STATIC_BUILD)
+ 	$(Q)$(MAKE) -C $(src)/python $@
+ 
+ PHONY += python
+-- 
+2.42.1
+
