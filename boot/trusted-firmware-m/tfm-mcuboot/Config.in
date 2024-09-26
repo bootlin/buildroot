@@ -1,0 +1,10 @@
+config BR2_TARGET_TFM_MCUBOOT
+	bool
+
+if BR2_TARGET_TRUSTED_FIRMWARE_M_CUSTOM_3RD_PARTY
+
+config BR2_TARGET_TFM_MCUBOOT_CUSTOM_TARBALL_LOCATION
+	string "URL of custom mcuboot tarball"
+	default "$(call github,mcu-tools,mcuboot)/v2.1.0.tar.gz"
+
+endif

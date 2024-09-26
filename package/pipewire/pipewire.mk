@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-PIPEWIRE_VERSION = 0.3.62
+PIPEWIRE_VERSION = 0.3.81
 PIPEWIRE_SOURCE = pipewire-$(PIPEWIRE_VERSION).tar.bz2
 PIPEWIRE_SITE = https://gitlab.freedesktop.org/pipewire/pipewire/-/archive/$(PIPEWIRE_VERSION)
 PIPEWIRE_LICENSE = MIT, LGPL-2.1+ (libspa-alsa), GPL-2.0 (libjackserver)
@@ -30,10 +30,13 @@ PIPEWIRE_CONF_OPTS += \
 	-Dvideoconvert=enabled \
 	-Dvideotestsrc=enabled \
 	-Dvolume=enabled \
+	-Dvulkan=disabled \
 	-Dsession-managers=[] \
 	-Dlegacy-rtkit=false \
 	-Davb=disabled \
 	-Dlibcanberra=disabled \
+	-Dlibmysofa=disabled \
+	-Dlibffado=disabled \
 	-Dflatpak=disabled
 
 ifeq ($(BR2_PACKAGE_DBUS),y)
@@ -122,10 +125,10 @@ PIPEWIRE_CONF_OPTS += -Dbluez5=disabled -Dbluez5-codec-opus=disabled
 endif
 
 ifeq ($(BR2_PACKAGE_FFMPEG),y)
-PIPEWIRE_CONF_OPTS += -Dffmpeg=enabled
+PIPEWIRE_CONF_OPTS += -Dffmpeg=enabled -Dpw-cat-ffmpeg=enabled
 PIPEWIRE_DEPENDENCIES += ffmpeg
 else
-PIPEWIRE_CONF_OPTS += -Dffmpeg=disabled
+PIPEWIRE_CONF_OPTS += -Dffmpeg=disabled -Dpw-cat-ffmpeg=disabled
 endif
 
 ifeq ($(BR2_PACKAGE_NCURSES_WCHAR),y)
@@ -180,18 +183,18 @@ else
 PIPEWIRE_CONF_OPTS += -Dlibusb=disabled
 endif
 
-ifeq ($(BR2_PACKAGE_MESA3D_VULKAN_DRIVER),y)
-PIPEWIRE_CONF_OPTS += -Dvulkan=enabled
-PIPEWIRE_DEPENDENCIES += mesa3d
-else
-PIPEWIRE_CONF_OPTS += -Dvulkan=disabled
-endif
-
 ifeq ($(BR2_PACKAGE_LIBSNDFILE),y)
 PIPEWIRE_CONF_OPTS += -Dpw-cat=enabled -Dsndfile=enabled
 PIPEWIRE_DEPENDENCIES += libsndfile
 else
 PIPEWIRE_CONF_OPTS += -Dpw-cat=disabled -Dsndfile=disabled
+endif
+
+ifeq ($(BR2_PACKAGE_OPUS),y)
+PIPEWIRE_CONF_OPTS += -Dopus=enabled
+PIPEWIRE_DEPENDENCIES += opus
+else
+PIPEWIRE_CONF_OPTS += -Dopus=disabled
 endif
 
 ifeq ($(BR2_PACKAGE_PULSEAUDIO),y)
@@ -215,7 +218,14 @@ else
 PIPEWIRE_CONF_OPTS += -Dsdl2=disabled
 endif
 
-ifeq ($(WEBRTC_AUDIO_PROCESSING),y)
+ifeq ($(BR2_PACKAGE_PIPEWIRE_COMPRESS_OFFLOAD),y)
+PIPEWIRE_CONF_OPTS += -Dcompress-offload=enabled
+PIPEWIRE_DEPENDENCIES += tinycompress
+else
+PIPEWIRE_CONF_OPTS += -Dcompress-offload=disabled
+endif
+
+ifeq ($(BR2_PACKAGE_WEBRTC_AUDIO_PROCESSING),y)
 PIPEWIRE_CONF_OPTS += -Decho-cancel-webrtc=enabled
 PIPEWIRE_DEPENDENCIES += webrtc-audio-processing
 else

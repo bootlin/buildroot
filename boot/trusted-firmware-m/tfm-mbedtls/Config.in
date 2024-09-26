@@ -1,0 +1,10 @@
+config BR2_TARGET_TFM_MBEDTLS
+	bool
+
+if BR2_TARGET_TRUSTED_FIRMWARE_M_CUSTOM_3RD_PARTY
+
+config BR2_TARGET_TFM_MBEDTLS_CUSTOM_TARBALL_LOCATION
+	string "URL of custom mbedtls tarball"
+	default "https://github.com/Mbed-TLS/mbedtls/releases/download/v3.6.0/mbedtls-3.6.0.tar.bz2"
+
+endif

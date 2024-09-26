@@ -6,8 +6,7 @@
 
 ULOGD_VERSION = 2.0.8
 ULOGD_SOURCE = ulogd-$(ULOGD_VERSION).tar.bz2
-ULOGD_SITE = http://www.netfilter.org/projects/ulogd/files
-ULOGD_CONF_OPTS = --disable-dbi
+ULOGD_SITE = https://www.netfilter.org/projects/ulogd/files
 ULOGD_DEPENDENCIES = host-pkgconf \
 	libmnl libnetfilter_acct libnetfilter_conntrack libnetfilter_log \
 	libnfnetlink
@@ -17,9 +16,17 @@ ULOGD_SELINUX_MODULES = ulogd
 
 # DB backends need threads
 ifeq ($(BR2_TOOLCHAIN_HAS_THREADS),y)
-ifeq ($(BR2_PACKAGE_MYSQL),y)
-ULOGD_CONF_OPTS += --enable-mysql
-ULOGD_DEPENDENCIES += mysql
+ifeq ($(BR2_PACKAGE_LIBDBI),y)
+ULOGD_CONF_OPTS += --enable-dbi
+ULOGD_DEPENDENCIES += libdbi
+else
+ULOGD_CONF_OPTS += --disable-dbi
+endif
+ifeq ($(BR2_PACKAGE_MARIADB),y)
+ULOGD_CONF_OPTS += \
+	--enable-mysql \
+	--with-mysql-config=$(STAGING_DIR)/usr/bin/mysql_config
+ULOGD_DEPENDENCIES += mariadb
 else
 ULOGD_CONF_OPTS += --disable-mysql
 endif
@@ -36,7 +43,11 @@ else
 ULOGD_CONF_OPTS += --disable-sqlite3
 endif
 else
-ULOGD_CONF_OPTS += --disable-mysql --disable-pgsql --disable-sqlite3
+ULOGD_CONF_OPTS += \
+	--disable-dbi \
+	--disable-mysql \
+	--disable-pgsql \
+	--disable-sqlite3
 endif
 
 ifeq ($(BR2_PACKAGE_LIBPCAP),y)

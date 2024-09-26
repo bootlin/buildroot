@@ -1,0 +1,10 @@
+config BR2_TARGET_TFM_CMSIS
+	bool
+
+if BR2_TARGET_TRUSTED_FIRMWARE_M_CUSTOM_3RD_PARTY
+
+config BR2_TARGET_TFM_CMSIS_CUSTOM_TARBALL_LOCATION
+	string "URL of custom cmcis tarball"
+	default "$(call github,arm-software,cmsis_6)/d0c460c169.tar.gz"
+
+endif
