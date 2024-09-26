@@ -19,24 +19,12 @@
 # This script generates a random configuration for testing Buildroot.
 
 from binascii import hexlify
-import contextlib
+import asyncio
 import csv
 import os
 from random import randint
-import subprocess
 import sys
 import traceback
-from distutils.version import StrictVersion
-import platform
-
-if sys.hexversion >= 0x3000000:
-    import urllib.request as _urllib
-else:
-    import urllib2 as _urllib
-
-
-def urlopen_closing(uri):
-    return contextlib.closing(_urllib.urlopen(uri))
 
 
 class SystemInfo:
@@ -65,7 +53,7 @@ class SystemInfo:
         # --
         return None
 
-    def has(self, prog):
+    async def has(self, prog):
         """Checks whether a program is available.
         Lazily evaluates missing entries.
 
@@ -80,11 +68,13 @@ class SystemInfo:
         have_it = self.find_prog(prog)
         # java[c] needs special care
         if have_it and prog in ('java', 'javac'):
-            with open(os.devnull, "w") as devnull:
-                if subprocess.call("%s -version | grep gcj" % prog,
-                                   shell=True,
-                                   stdout=devnull, stderr=devnull) != 1:
-                    have_it = False
+            proc = await asyncio.create_subprocess_shell(
+                "%s -version | grep gcj" % prog,
+                stdout=asyncio.subprocess.DEVNULL,
+                stderr=asyncio.subprocess.DEVNULL)
+            ret = await proc.wait()
+            if ret != 1:
+                have_it = False
         # --
         self.progs[prog] = have_it
         return have_it
@@ -161,7 +151,7 @@ def get_toolchain_configs(toolchains_csv, buildrootdir):
     return configs
 
 
-def is_toolchain_usable(configfile, config):
+async def is_toolchain_usable(configfile, config):
     """Check if the toolchain is actually usable."""
 
     with open(configfile) as configf:
@@ -174,23 +164,10 @@ def is_toolchain_usable(configfile, config):
             print("      Missing: %s" % toolchainline.strip(), file=sys.stderr)
             return False
 
-    # The latest Linaro toolchains on x86-64 hosts requires glibc
-    # 2.14+ on the host.
-    if platform.machine() == 'x86_64':
-        if 'BR2_TOOLCHAIN_EXTERNAL_LINARO_ARM=y\n' in configlines or \
-           'BR2_TOOLCHAIN_EXTERNAL_LINARO_AARCH64=y\n' in configlines or \
-           'BR2_TOOLCHAIN_EXTERNAL_LINARO_AARCH64_BE=y\n' in configlines or \
-           'BR2_TOOLCHAIN_EXTERNAL_LINARO_ARMEB=y\n' in configlines:
-            ldd_version_output = subprocess.check_output(['ldd', '--version'])
-            glibc_version = ldd_version_output.decode().splitlines()[0].split()[-1]
-            if StrictVersion('2.14') > StrictVersion(glibc_version):
-                print("WARN: ignoring the Linaro ARM toolchains because too old host glibc", file=sys.stderr)
-                return False
-
     return True
 
 
-def fixup_config(sysinfo, configfile):
+async def fixup_config(sysinfo, configfile):
     """Finalize the configuration and reject any problematic combinations
 
     This function returns 'True' when the configuration has been
@@ -206,7 +183,7 @@ def fixup_config(sysinfo, configfile):
 
     BR2_TOOLCHAIN_EXTERNAL_URL = 'BR2_TOOLCHAIN_EXTERNAL_URL="http://autobuild.buildroot.org/toolchains/tarballs/'
 
-    if "BR2_NEEDS_HOST_JAVA=y\n" in configlines and not sysinfo.has("java"):
+    if "BR2_NEEDS_HOST_JAVA=y\n" in configlines and not await sysinfo.has("java"):
         return False
     # The ctng toolchain is affected by PR58854
     if 'BR2_PACKAGE_LTTNG_TOOLS=y\n' in configlines and \
@@ -309,6 +286,10 @@ def fixup_config(sysinfo, configfile):
     if 'BR2_XTENSA_CUSTOM=y' in configlines and \
        'BR2_TOOLCHAIN_BUILDROOT=y' in configlines:
         return False
+
+    if 'BR2_TOOLCHAIN_BARE_METAL_BUILDROOT=y\n' in configlines:
+        configlines.remove('BR2_TOOLCHAIN_BARE_METAL_BUILDROOT_ARCH=""\n')
+        configlines.append('BR2_TOOLCHAIN_BARE_METAL_BUILDROOT_ARCH="microblazeel-xilinx-elf"\n')
 
     if 'BR2_PACKAGE_AUFS_UTIL=y\n' in configlines and \
        'BR2_PACKAGE_AUFS_UTIL_VERSION=""\n' in configlines:
@@ -487,6 +468,10 @@ def fixup_config(sysinfo, configfile):
         configlines.remove('BR2_TARGET_BAREBOX_USE_DEFCONFIG=y\n')
         configlines.remove('BR2_TARGET_BAREBOX_BOARD_DEFCONFIG=""\n')
 
+    if 'BR2_TARGET_BOOT_WRAPPER_AARCH64=y\n' in configlines and \
+       'BR2_TARGET_BOOT_WRAPPER_AARCH64_DTS=""\n' in configlines:
+        return False
+
     if 'BR2_TARGET_OPTEE_OS=y\n' in configlines and \
        'BR2_TARGET_OPTEE_OS_CUSTOM_TARBALL=y\n' in configlines and \
        'BR2_TARGET_OPTEE_OS_CUSTOM_TARBALL_LOCATION=""\n' in configlines:
@@ -499,6 +484,9 @@ def fixup_config(sysinfo, configfile):
         configlines.remove('BR2_TARGET_OPTEE_OS=y\n')
         configlines.remove('BR2_TARGET_OPTEE_OS_PLATFORM=""\n')
 
+    if 'BR2_TARGET_ROOTFS_CRAMFS=y\n' in configlines:
+        configlines.remove('BR2_TARGET_ROOTFS_CRAMFS=y\n')
+
     if 'BR2_TARGET_ROOTFS_EXT2=y\n' in configlines and \
        'BR2_TARGET_ROOTFS_EXT2_SIZE="60M"\n' in configlines:
         configlines.remove('BR2_TARGET_ROOTFS_EXT2_SIZE="60M"\n')
@@ -509,10 +497,26 @@ def fixup_config(sysinfo, configfile):
         configlines.remove('BR2_TARGET_ROOTFS_F2FS_SIZE="100M"\n')
         configlines.append('BR2_TARGET_ROOTFS_F2FS_SIZE="%s"\n' % ROOTFS_SIZE)
 
+    if 'BR2_TARGET_ROOTFS_UBIFS=y\n' in configlines and \
+       'BR2_TARGET_ROOTFS_UBIFS_MAXLEBCNT=2048\n' in configlines:
+        configlines.remove('BR2_TARGET_ROOTFS_UBIFS_MAXLEBCNT=2048\n')
+        configlines.append('BR2_TARGET_ROOTFS_UBIFS_MAXLEBCNT=41610\n')
+
+    if 'BR2_TARGET_ROOTFS_UBI=y\n' in configlines and \
+       'BR2_TARGET_ROOTFS_UBI_USE_CUSTOM_CONFIG=y\n' in configlines and \
+       'BR2_TARGET_ROOTFS_UBI_CUSTOM_CONFIG_FILE=""\n' in configlines:
+        configlines.remove('BR2_TARGET_ROOTFS_UBI_USE_CUSTOM_CONFIG=y\n')
+        configlines.remove('BR2_TARGET_ROOTFS_UBI_CUSTOM_CONFIG_FILE=""\n')
+
     if 'BR2_TARGET_S500_BOOTLOADER=y\n' in configlines and \
        'BR2_TARGET_S500_BOOTLOADER_BOARD=""\n' in configlines:
         configlines.remove('BR2_TARGET_S500_BOOTLOADER=y\n')
         configlines.remove('BR2_TARGET_S500_BOOTLOADER_BOARD=""\n')
+
+    if 'BR2_TARGET_TI_K3_R5_LOADER=y\n' in configlines and \
+       'BR2_TARGET_TI_K3_R5_LOADER_USE_DEFCONFIG=y\n' in configlines and \
+       'BR2_TARGET_TI_K3_R5_LOADER_BOARD_DEFCONFIG=""\n' in configlines:
+        return False
 
     if 'BR2_TARGET_UBOOT=y\n' in configlines and \
        'BR2_TARGET_UBOOT_BUILD_SYSTEM_KCONFIG=y\n' in configlines and \
@@ -649,7 +653,7 @@ def fixup_config(sysinfo, configfile):
     return True
 
 
-def gen_config(args):
+async def gen_config(args):
     """Generate a new random configuration
 
     This function generates the configuration, by choosing a random
@@ -707,7 +711,7 @@ def gen_config(args):
 
     # Randomly enable BR2_REPRODUCIBLE 10% of times
     # also enable tar filesystem images for testing
-    if sysinfo.has("diffoscope") and randint(0, 10) == 0:
+    if await sysinfo.has("diffoscope") and randint(0, 10) == 0:
         configlines.append("BR2_REPRODUCIBLE=y\n")
         configlines.append("BR2_TARGET_ROOTFS_TAR=y\n")
 
@@ -721,10 +725,13 @@ def gen_config(args):
     with open(configfile, "w+") as configf:
         configf.writelines(configlines)
 
-    subprocess.check_call(["make", "O=%s" % args.outputdir, "-C", args.buildrootdir,
-                           "olddefconfig"])
+    proc = await asyncio.create_subprocess_exec(
+        "make", "O=%s" % args.outputdir, "-C", args.buildrootdir, "olddefconfig")
+    ret = await proc.wait()
+    if ret:
+        return ret
 
-    if not is_toolchain_usable(configfile, toolchainconfig):
+    if not await is_toolchain_usable(configfile, toolchainconfig):
         return 2
 
     # Now, generate the random selection of packages, and fixup
@@ -738,25 +745,33 @@ def gen_config(args):
                   file=sys.stderr)
             return 1
         bounded_loop -= 1
-        make_rand = [
+        proc = await asyncio.create_subprocess_exec(
             "make", "O=%s" % args.outputdir, "-C", args.buildrootdir,
             "KCONFIG_SEED=0x%s" % hexlify(os.urandom(4)).decode("ascii").upper(),
             "KCONFIG_PROBABILITY=%d" % randint(1, 20),
-            "randpackageconfig" if args.toolchains_csv else "randconfig"
-        ]
-        subprocess.check_call(make_rand)
+            "randpackageconfig" if args.toolchains_csv else "randconfig")
+        ret = await proc.wait()
+        if ret:
+            return ret
 
-        if fixup_config(sysinfo, configfile):
+        if await fixup_config(sysinfo, configfile):
             break
 
-    subprocess.check_call(["make", "O=%s" % args.outputdir, "-C", args.buildrootdir,
-                           "olddefconfig"])
+    proc = await asyncio.create_subprocess_exec(
+        "make", "O=%s" % args.outputdir, "-C", args.buildrootdir, "olddefconfig")
+    ret = await proc.wait()
+    if ret:
+        return ret
 
-    subprocess.check_call(["make", "O=%s" % args.outputdir, "-C", args.buildrootdir,
-                           "savedefconfig"])
+    proc = await asyncio.create_subprocess_exec(
+        "make", "O=%s" % args.outputdir, "-C", args.buildrootdir, "savedefconfig")
+    ret = await proc.wait()
+    if ret:
+        return ret
 
-    return subprocess.call(["make", "O=%s" % args.outputdir, "-C", args.buildrootdir,
-                            "dependencies"])
+    proc = await asyncio.create_subprocess_exec(
+        "make", "O=%s" % args.outputdir, "-C", args.buildrootdir, "dependencies")
+    return await proc.wait()
 
 
 if __name__ == '__main__':
@@ -788,7 +803,11 @@ if __name__ == '__main__':
     args.outputdir = os.path.abspath(args.outputdir)
 
     try:
-        ret = gen_config(args)
+        if sys.version_info < (3, 7):
+            loop = asyncio.get_event_loop()
+            ret = loop.run_until_complete(gen_config(args))
+        else:
+            ret = asyncio.run(gen_config(args))
     except Exception:
         traceback.print_exc()
         parser.exit(1)

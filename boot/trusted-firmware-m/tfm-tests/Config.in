@@ -1,0 +1,10 @@
+config BR2_TARGET_TFM_TESTS
+	bool
+
+if BR2_TARGET_TRUSTED_FIRMWARE_M_CUSTOM_3RD_PARTY
+
+config BR2_TARGET_TFM_TESTS_CUSTOM_TARBALL_LOCATION
+	string "URL of custom TF-M-tests tarball"
+	default "https://git.trustedfirmware.org/TF-M/tf-m-tests.git/+archive/TF-Mv2.1.0.tar.gz"
+
+endif
