@@ -100,12 +100,13 @@ TOOLCHAIN_EXTERNAL_READELF = $(TOOLCHAIN_EXTERNAL_CROSS)readelf
 # Normal handling of downloaded toolchain tarball extraction.
 ifeq ($(BR2_TOOLCHAIN_EXTERNAL_DOWNLOAD),y)
 # As a regular package, the toolchain gets extracted in $(@D), but
-# since it's actually a fairly special package, we need it to be moved
+# since it's actually a fairly special package, we need it to be copied
 # into TOOLCHAIN_EXTERNAL_DOWNLOAD_INSTALL_DIR.
-define TOOLCHAIN_EXTERNAL_MOVE
+define TOOLCHAIN_EXTERNAL_COPY
 	rm -rf $(TOOLCHAIN_EXTERNAL_DOWNLOAD_INSTALL_DIR)
 	mkdir -p $(TOOLCHAIN_EXTERNAL_DOWNLOAD_INSTALL_DIR)
-	mv $(@D)/* $(TOOLCHAIN_EXTERNAL_DOWNLOAD_INSTALL_DIR)/
+	rsync -a --hard-links --link-dest=$(TOOLCHAIN_EXTERNAL_DOWNLOAD_INSTALL_DIR) \
+		$(@D)/* $(TOOLCHAIN_EXTERNAL_DOWNLOAD_INSTALL_DIR)/
 endef
 endif
 
@@ -570,7 +571,7 @@ ifeq ($$(BR2_TOOLCHAIN_EXTERNAL_DOWNLOAD),y)
 $(2)_EXCLUDES = usr/lib/locale/*
 
 $(2)_POST_EXTRACT_HOOKS += \
-	TOOLCHAIN_EXTERNAL_MOVE
+	TOOLCHAIN_EXTERNAL_COPY
 endif
 
 # Checks for an already installed toolchain: check the toolchain
