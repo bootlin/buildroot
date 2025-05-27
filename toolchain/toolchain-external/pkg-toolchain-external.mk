@@ -106,6 +106,11 @@ define TOOLCHAIN_EXTERNAL_MOVE
 	rm -rf $(TOOLCHAIN_EXTERNAL_DOWNLOAD_INSTALL_DIR)
 	mkdir -p $(TOOLCHAIN_EXTERNAL_DOWNLOAD_INSTALL_DIR)
 	mv $(@D)/* $(TOOLCHAIN_EXTERNAL_DOWNLOAD_INSTALL_DIR)/
+	# Copy back the license files needed for legal-info generation
+	$(foreach f, $($(PKG)_LICENSE_FILES), \
+		[[ -d $$(dirname $(@D)/$(f)) ]] || mkdir -p $$(dirname $(@D)/$(f))
+		cp $(TOOLCHAIN_EXTERNAL_DOWNLOAD_INSTALL_DIR)/$(f) $(@D)/$(f)
+	)
 endef
 endif
 
