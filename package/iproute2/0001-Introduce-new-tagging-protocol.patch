@@ -1,0 +1,103 @@
+From 6565fa1818ad77e666af82518092a15e4abda75e Mon Sep 17 00:00:00 2001
+From: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Date: Mon, 9 Jun 2025 20:10:46 +0200
+Subject: [PATCH] Introduce new tagging protocol
+
+Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
+---
+ ip/Makefile            |  2 +-
+ ip/iplink.c            |  2 +-
+ ip/iplink_bootlinlan.c | 55 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 57 insertions(+), 2 deletions(-)
+ create mode 100644 ip/iplink_bootlinlan.c
+
+diff --git a/ip/Makefile b/ip/Makefile
+index 3535ba78..ed9d258b 100644
+--- a/ip/Makefile
++++ b/ip/Makefile
+@@ -13,7 +13,7 @@ IPOBJ=ip.o ipaddress.o ipaddrlabel.o iproute.o iprule.o ipnetns.o \
+     ipvrf.o iplink_xstats.o ipseg6.o iplink_netdevsim.o iplink_rmnet.o \
+     ipnexthop.o ipmptcp.o iplink_bareudp.o iplink_wwan.o ipioam6.o \
+     iplink_amt.o iplink_batadv.o iplink_gtp.o iplink_virt_wifi.o \
+-    iplink_netkit.o ipstats.o
++    iplink_netkit.o ipstats.o iplink_bootlinlan.o
+ 
+ RTMONOBJ=rtmon.o
+ 
+diff --git a/ip/iplink.c b/ip/iplink.c
+index 59e8caf4..083d1d31 100644
+--- a/ip/iplink.c
++++ b/ip/iplink.c
+@@ -43,7 +43,7 @@ void iplink_types_usage(void)
+ 		"          macsec | macvlan | macvtap | netdevsim |\n"
+ 		"          netkit | nlmon | pfcp | rmnet | sit | team | team_slave |\n"
+ 		"          vcan | veth | vlan | vrf | vti | vxcan | vxlan | wwan |\n"
+-		"          xfrm | virt_wifi }\n");
++		"          xfrm | virt_wifi | blan }\n");
+ }
+ 
+ void iplink_usage(void)
+diff --git a/ip/iplink_bootlinlan.c b/ip/iplink_bootlinlan.c
+new file mode 100644
+index 00000000..6f25e2f4
+--- /dev/null
++++ b/ip/iplink_bootlinlan.c
+@@ -0,0 +1,55 @@
++/* SPDX-License-Identifier: GPL-2.0
++ *
++ */
++
++#include <stdio.h>
++#include <stdlib.h>
++
++#include "utils.h"
++#include "ip_common.h"
++
++/* MUST mirror exactly what the driver does. Normally, this would go under
++ * include/uapi/linux/if_lnk.h
++ */
++enum {
++	IFLA_BLAN_UNSPEC,
++	IFLA_BLAN_ID,
++	__IFLA_BLAN_MAX,
++};
++
++#define IFLA_BLAN_MAX (__IFLA_BLAN_MAX - 1)
++
++static void blan_print_help(struct link_util *lu,
++		int argc, char **argv, FILE *f)
++{
++	fprintf(f, "Usage: ... blan id ID \n");
++}
++
++static void blan_parse_opt(struct link_util *lu, int argc, char **argv,
++			   struct nlmsghdr *n)
++{
++	__u16 id;
++
++	while (argc > 0) {
++		if (matches(*argv, "id") == 0) {
++			NEXT_ARG();
++			if (get_u16(&id, *argv, 0))
++				invarg("id is invalid", *argv);
++			if (id > 99)
++				invarg("id is invalid", *argv);
++			addattr_l(n, 1024, IFLA_BLAN_ID, &id, 2);
++		} else {
++			fprintf(stderr, "bootlinlan: unknown command \"%s\"?\n", *argv);
++			return -1;
++		}
++
++		argc--, argv++;
++	}
++}
++
++struct link_util blan_link_util = {
++	.id		= "blan",
++	.maxattr	= IFLA_BLAN_MAX,
++	.print_help	= blan_print_help,
++	.parse_opt	= blan_parse_opt,
++};
+-- 
+2.49.0
+
