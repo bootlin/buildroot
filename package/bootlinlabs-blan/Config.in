@@ -1,0 +1,4 @@
+config BR2_PACKAGE_BOOTLINLABS_BLAN
+	bool "blan"
+	help
+	  custom L2 protocol for Bootlin labs

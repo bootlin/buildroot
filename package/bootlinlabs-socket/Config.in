@@ -1,0 +1,4 @@
+config BR2_PACKAGE_BOOTLINLABS_SOCKET
+	bool "socket"
+	help
+	  socket lab for Bootlin labs

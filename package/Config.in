@@ -2931,4 +2931,9 @@ menu "Text editors and viewers"
 	source "package/vim/Config.in"
 endmenu
 
+menu "Bootlin labs"
+	source "package/bootlinlabs-blan/Config.in"
+	source "package/bootlinlabs-socket/Config.in"
+endmenu
+
 endmenu
