@@ -1,0 +1,41 @@
+#!/bin/sh
+#
+# Start gdbserver
+#
+
+PID_FILE="/var/run/gdbserver.pid"
+GDBSERVER_ARGS="--multi :9876"
+
+start() {
+	printf "Starting gdbserver: "
+
+	start-stop-daemon -S -q -m -b -p ${PID_FILE} \
+		--exec /usr/bin/gdbserver -- ${GDBSERVER_ARGS}
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
+}
+stop() {
+	printf "Stopping gdbserver: "
+	start-stop-daemon -K -q -p ${PID_FILE}
+	[ $? = 0 ] && rm -rf ${PID_FILE} echo "OK" || echo "FAIL"
+}
+restart() {
+	stop
+	start
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart|reload)
+	restart
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?

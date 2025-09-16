@@ -1,0 +1,43 @@
+#!/bin/sh
+#
+# Starts system service
+#
+
+start() {
+        if [ -f /var/run/daemon.pid ]
+        then
+                exit
+        fi
+        nohup /usr/bin/daemon.sh 0<&- &>/dev/null &
+        echo $! > /var/run/daemon.pid
+}
+stop() {
+        if [ ! -f /var/run/daemon.pid ]
+        then
+                exit
+        fi
+        kill -9 $(cat /var/run/daemon.pid)
+	rm -rf /var/run/daemon.pid
+}
+restart() {
+        stop
+        start
+}
+
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  restart|reload)
+        restart
+        ;;
+  *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+esac
+
+exit $?
+
