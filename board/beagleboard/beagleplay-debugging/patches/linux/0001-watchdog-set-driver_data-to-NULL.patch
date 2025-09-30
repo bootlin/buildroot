@@ -1,0 +1,30 @@
+From 917f3c5af92d24b6657dbb44aa11135ddc52e1d7 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <clement.leger@bootlin.com>
+Date: Wed, 2 Nov 2022 09:59:53 +0100
+Subject: [PATCH 2/3] watchdog: set driver_data to NULL
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Clément Léger <clement.leger@bootlin.com>
+---
+ drivers/watchdog/watchdog_core.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/watchdog/watchdog_core.c b/drivers/watchdog/watchdog_core.c
+index 5df0a22e2cb4..7ce64821ff78 100644
+--- a/drivers/watchdog/watchdog_core.c
++++ b/drivers/watchdog/watchdog_core.c
+@@ -292,6 +292,9 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
+ 				wdd->id, ret);
+ 	}
+ 
++
++	watchdog_set_drvdata(wdd, NULL);
++
+ 	return 0;
+ }
+ 
+-- 
+2.38.1
+

@@ -1,0 +1,57 @@
+From ff4257d58c6bbfe7acd9120327c5ab5cc475b05a Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Alexis=20Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+Date: Fri, 19 Sep 2025 19:27:00 +0200
+Subject: [PATCH] disable interrupt masking in kexec
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+When trying to execute a kexec setup with a mainline kernel, the platforms
+ends up in a kernel panic:
+
+  SMP: stopping secondary CPUs
+  Unable to handle kernel NULL pointer dereference at virtual address 0000000000000008
+  Mem abort info:
+    ESR = 0x0000000096000004
+    EC = 0x25: DABT (current EL), IL = 32 bits
+    SET = 0, FnV = 0
+    EA = 0, S1PTW = 0
+    FSC = 0x04: level 0 translation fault
+  Data abort info:
+    ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+    CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+    GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+  user pgtable: 4k pages, 48-bit VAs, pgdp=00000000818b4000
+  [0000000000000008] pgd=0000000000000000, p4d=0000000000000000
+
+This issue has been encountered by some other users from the TI platform,
+and notified on the TI forum. No proper fix seems to have been integrated,
+but a hotfix has been provided by TI support:
+
+https://e2e.ti.com/support/processors-group/processors/f/processors-forum/1192999/tda4vm-tda4-is-kexec-implemented-in-tda4
+
+Bring back this hotfix to enable the kexec setup for the Beagleplay variant
+of the debugging training.
+
+Signed-off-by: Alexis Lothoré <alexis.lothore@bootlin.com>
+---
+ arch/arm64/kernel/machine_kexec.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/arch/arm64/kernel/machine_kexec.c b/arch/arm64/kernel/machine_kexec.c
+index 82e2203d86a3..9c2bc5bb675c 100644
+--- a/arch/arm64/kernel/machine_kexec.c
++++ b/arch/arm64/kernel/machine_kexec.c
+@@ -230,9 +230,6 @@ static void machine_kexec_mask_interrupts(void)
+ 		    chip->irq_eoi)
+ 			chip->irq_eoi(&desc->irq_data);
+ 
+-		if (chip->irq_mask)
+-			chip->irq_mask(&desc->irq_data);
+-
+ 		if (chip->irq_disable && !irqd_irq_disabled(&desc->irq_data))
+ 			chip->irq_disable(&desc->irq_data);
+ 	}
+-- 
+2.51.0
+

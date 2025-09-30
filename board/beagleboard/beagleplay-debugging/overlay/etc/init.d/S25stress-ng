@@ -5,7 +5,7 @@
 
 start() {
 	start-stop-daemon -S -q -b -m -p /var/run/stress_cpu.pid --exec \
-		/usr/bin/stress-ng -- -q --cpu 2 --cpu-load 80 --taskset 0,1
+		/usr/bin/stress-ng -- -q --cpu 4 --cpu-load 80 --taskset 0-3
 }
 stop() {
 	start-stop-daemon -K -q -p /var/run/stress_cpu.pid
