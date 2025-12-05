@@ -1,0 +1,39 @@
+From 7008cb4f38ab24c5e39e1957bfa4e57e78e09836 Mon Sep 17 00:00:00 2001
+From: Kory Maincent <kory.maincent@bootlin.com>
+Date: Mon, 1 Dec 2025 18:46:20 +0100
+Subject: [PATCH 4/6] tools: mkfwumdata: Add bank count validation for FWU
+ metadata v2
+
+The FWU metadata specification version 2 supports a maximum of 4 banks.
+Add validation to enforce this limit and prevent creation of non-compliant
+metadata structures when using version 2.
+
+Without this check, users could inadvertently create invalid metadata by
+specifying more than 4 banks, leading to potential compatibility issues
+with FWU-compliant firmware update implementations.
+
+Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+---
+ tools/fwumdata_src/mkfwumdata.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/tools/fwumdata_src/mkfwumdata.c b/tools/fwumdata_src/mkfwumdata.c
+index 5ceec7a2980..8b25539fd57 100644
+--- a/tools/fwumdata_src/mkfwumdata.c
++++ b/tools/fwumdata_src/mkfwumdata.c
+@@ -471,6 +471,12 @@ int main(int argc, char *argv[])
+ 		return -EINVAL;
+ 	}
+ 
++	if (version == 2 && banks > MAX_BANKS_V2) {
++		fprintf(stderr, "Error: Version 2 supports maximum %d banks, %ld requested.\n",
++			MAX_BANKS_V2, banks);
++		return -EINVAL;
++	}
++
+ 	/* This command takes UUIDs * images and output file. */
+ 	if (optind + images + 1 != argc) {
+ 		fprintf(stderr,
+-- 
+2.43.0
+

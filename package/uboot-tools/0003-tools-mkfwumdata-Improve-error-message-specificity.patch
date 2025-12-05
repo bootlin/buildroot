@@ -1,0 +1,32 @@
+From a46d5dd3a64fc61bad27a55fd35a8fa8674b1b92 Mon Sep 17 00:00:00 2001
+From: Kory Maincent <kory.maincent@bootlin.com>
+Date: Mon, 1 Dec 2025 18:42:10 +0100
+Subject: [PATCH 3/6] tools: mkfwumdata: Improve error message specificity
+
+Replace the generic error message with a more informative one.
+This helps users quickly understand the correct command-line argument
+format when the tool reports an error.
+
+Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+---
+ tools/fwumdata_src/mkfwumdata.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/tools/fwumdata_src/mkfwumdata.c b/tools/fwumdata_src/mkfwumdata.c
+index fbc2067bc12..5ceec7a2980 100644
+--- a/tools/fwumdata_src/mkfwumdata.c
++++ b/tools/fwumdata_src/mkfwumdata.c
+@@ -473,7 +473,9 @@ int main(int argc, char *argv[])
+ 
+ 	/* This command takes UUIDs * images and output file. */
+ 	if (optind + images + 1 != argc) {
+-		fprintf(stderr, "Error: UUID list or output file is not specified or too much.\n");
++		fprintf(stderr,
++			"Error: Expected %ld UUID string(s) and 1 output file, got %d argument(s).\n",
++			images, argc - optind);
+ 		print_usage();
+ 		return -ERANGE;
+ 	}
+-- 
+2.43.0
+

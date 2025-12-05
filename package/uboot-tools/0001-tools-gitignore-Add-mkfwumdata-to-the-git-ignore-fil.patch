@@ -1,0 +1,27 @@
+From 61e5c60679989485f5c90de245a80e0cf99d0437 Mon Sep 17 00:00:00 2001
+From: Kory Maincent <kory.maincent@bootlin.com>
+Date: Mon, 1 Dec 2025 17:44:44 +0100
+Subject: [PATCH 1/6] tools: gitignore: Add mkfwumdata to the git ignore file
+
+mkfwumdata is a built image. Add it to .gitignore.
+
+Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+---
+ tools/.gitignore | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tools/.gitignore b/tools/.gitignore
+index 6a5c613f772..e8daa24a52d 100644
+--- a/tools/.gitignore
++++ b/tools/.gitignore
+@@ -24,6 +24,7 @@
+ /mkeficapsule
+ /mkenvimage
+ /mkexynosspl
++/mkfwumdata
+ /mkimage
+ /mksunxiboot
+ /mxsboot
+-- 
+2.43.0
+
