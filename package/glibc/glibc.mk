@@ -7,15 +7,9 @@
 # Generate version string using:
 #   git describe --match 'glibc-*' --abbrev=40 origin/release/MAJOR.MINOR/master | cut -d '-' -f 2-
 # When updating the version, please also update localedef
-GLIBC_VERSION = 2.41-5-gcb7f20653724029be89224ed3a35d627cc5b4163
-
-# Upstream doesn't officially provide an https download link.
-# There is one (https://sourceware.org/git/glibc.git) but it's not reliable,
-# sometimes the connection times out. So use an unofficial github mirror.
-# When updating the version, check it on the official repository;
-# *NEVER* decide on a version string by looking at the mirror.
-# Then check that the mirror has been synced already (happens once a day.)
-GLIBC_SITE = $(call github,bminor,glibc,$(GLIBC_VERSION))
+GLIBC_VERSION = 2.41-159-g3d141c23899d90559741b5fe74db97ccf0ef5c29
+GLIBC_SITE = https://gitlab.com/gnutools/glibc.git
+GLIBC_SITE_METHOD = git
 
 GLIBC_LICENSE = GPL-2.0+ (programs), LGPL-2.1+, BSD-3-Clause, MIT (library)
 GLIBC_LICENSE_FILES = COPYING COPYING.LIB LICENSES
@@ -25,19 +19,73 @@ GLIBC_CPE_ID_VENDOR = gnu
 # allow proper matching with the CPE database.
 GLIBC_CPE_ID_VERSION = $(word 1, $(subst -,$(space),$(GLIBC_VERSION)))
 
-# All these CVEs are considered as not being security issues by
+# Fixed by glibc-2.41-57-g84bdbf8a6f2fdafd3661489dbb7f79835a52da82
+GLIBC_IGNORE_CVES += CVE-2025-5745
+
+# Fixed by glibc-2.41-60-g0c76c951620f9e12df2a89b2c684878b55bb6795
+GLIBC_IGNORE_CVES += CVE-2025-5702
+
+# Fixed by glibc-2.41-64-g1e16d0096d80a6e12d5bfa8e0aafdd13c47efd65
+GLIBC_IGNORE_CVES += CVE-2025-8058
+
+# Fixed by glibc-2.41-121-g1e2c1ea4307197ccece0cda574bcfebf9080894c
+GLIBC_IGNORE_CVES += CVE-2026-0861
+
+# Fixed by glibc-2.41-122-g15c9839a0b853f552b4ed9047841b6223f3c104d
+GLIBC_IGNORE_CVES += CVE-2026-0915
+
+# Fixed by glibc-2.41-123-gfb4db64a04ad6c96cd1fbb7e02eb59323b1f2ac2
+GLIBC_IGNORE_CVES += CVE-2025-15281
+
+# This CVE is considered as not being security issues by
 # upstream glibc:
 #  https://security-tracker.debian.org/tracker/CVE-2010-4756
-#  https://security-tracker.debian.org/tracker/CVE-2019-1010022
-#  https://security-tracker.debian.org/tracker/CVE-2019-1010023
-#  https://security-tracker.debian.org/tracker/CVE-2019-1010024
-#  https://security-tracker.debian.org/tracker/CVE-2019-1010025
-GLIBC_IGNORE_CVES += \
-	CVE-2010-4756 \
-	CVE-2019-1010022 \
-	CVE-2019-1010023 \
-	CVE-2019-1010024 \
-	CVE-2019-1010025
+GLIBC_IGNORE_CVES += CVE-2010-4756
+
+# Fixed by glibc-2.41-121-g1e2c1ea4307197ccece0cda574bcfebf9080894c
+GLIBC_IGNORE_CVES += CVE-2026-0861
+
+# Fixed by glibc-2.41-122-g15c9839a0b853f552b4ed9047841b6223f3c104d
+GLIBC_IGNORE_CVES += CVE-2026-0915
+
+# Fixed by glibc-2.41-123-gfb4db64a04ad6c96cd1fbb7e02eb59323b1f2ac2
+GLIBC_IGNORE_CVES += CVE-2025-15281
+
+# Fixed by glibc-2.41-131-gdbd8335c8ce8af11226ee1514d7a020b15c63345
+GLIBC_IGNORE_CVES += CVE-2026-4437
+
+# Fixed by glibc-2.41-132-g502861645bb1baf650d58e2ddd6b230bc26676c9
+GLIBC_IGNORE_CVES += CVE-2026-4438
+
+# Fixed by glibc-2.41-135-g61737f43b1f0d9f64a6f16649625476b70f9f4d3
+GLIBC_IGNORE_CVES += CVE-2026-4046
+
+# Fixed by glibc-2.41-138-g8941538b92a574a24e9308e164869239d2b0d845
+GLIBC_IGNORE_CVES += CVE-2026-5928
+
+# Fixed by glibc-2.41-142-g1a74f82eedaf0987eda1f522121e6a48fac502e7
+GLIBC_IGNORE_CVES += CVE-2026-5450
+
+# Fixed by glibc-2.41-149-g0e8c56b386d72ba2ddf15784423f2e894c63a241
+GLIBC_IGNORE_CVES += CVE-2026-5435
+
+# Fixed by glibc-2.41-150-g05e1eaea619072a92ff1f5fefe1ac2dd5758829c
+GLIBC_IGNORE_CVES += CVE-2026-6238
+
+# Fixed by glibc-2.41-152-g965b580070b8184b0dd390800d9194291a600e67
+GLIBC_IGNORE_CVES += CVE-2026-6791
+
+# Fixed by glibc-2.41-153-gdfc8ef388ef7856f318ade7dec501f92ce54f9e3
+GLIBC_IGNORE_CVES += CVE-2026-6368
+
+# Fixed by glibc-2.41-156-g5256941bc811248670eda4636dccd0a390d34dec
+GLIBC_IGNORE_CVES += CVE-2026-19499
+
+# Fixed by glibc-2.41-157-ge43e46f94398b3de446fec11da1e7633ea5202ec
+GLIBC_IGNORE_CVES += CVE-2026-77117
+
+# Fixed by glibc-2.41-158-gec116a0fbedcc860631e525e70b409cf295f27da
+GLIBC_IGNORE_CVES += CVE-2026-80489
 
 # glibc is part of the toolchain so disable the toolchain dependency
 GLIBC_ADD_TOOLCHAIN_DEPENDENCY = NO
@@ -50,8 +98,6 @@ GLIBC_DEPENDENCIES = host-gcc-initial linux-headers host-bison host-gawk \
 GLIBC_SUBDIR = build
 
 GLIBC_INSTALL_STAGING = YES
-
-GLIBC_INSTALL_STAGING_OPTS = install_root=$(STAGING_DIR) install
 
 # Thumb build is broken, build in ARM mode
 ifeq ($(BR2_ARM_INSTRUCTIONS_THUMB),y)

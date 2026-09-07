@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-HOSTAPD_VERSION = 2.11
+HOSTAPD_VERSION = 2.12
 HOSTAPD_SITE = http://w1.fi/releases
 HOSTAPD_SUBDIR = hostapd
 HOSTAPD_CONFIG = $(HOSTAPD_DIR)/$(HOSTAPD_SUBDIR)/.config
@@ -31,10 +31,6 @@ HOSTAPD_CONFIG_EDITS += 's/\#\(CONFIG_TLS=openssl\)/\1/'
 else
 HOSTAPD_CONFIG_DISABLE += CONFIG_EAP_PWD CONFIG_EAP_TEAP
 HOSTAPD_CONFIG_EDITS += 's/\#\(CONFIG_TLS=\).*/\1internal/'
-endif
-
-ifeq ($(BR2_PACKAGE_HOSTAPD_DRIVER_HOSTAP),)
-HOSTAPD_CONFIG_DISABLE += CONFIG_DRIVER_HOSTAP
 endif
 
 ifeq ($(BR2_PACKAGE_HOSTAPD_DRIVER_NL80211),)

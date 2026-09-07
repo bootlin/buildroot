@@ -27,6 +27,9 @@ MUPDF_IGNORE_CVES = \
 	CVE-2024-24258 \
 	CVE-2024-24259
 
+# 0001-Fix-incorrect-error-case-free-of-pixmap.patch
+MUPDF_IGNORE_CVES += CVE-2026-25556
+
 # mupdf doesn't use CFLAGS and LIBS but XCFLAGS and XLIBS instead.
 # with USE_SYSTEM_LIBS it will try to use system libraries instead of the bundled ones.
 MUPDF_MAKE_ENV = $(TARGET_MAKE_ENV) $(TARGET_CONFIGURE_OPTS) \
@@ -68,7 +71,7 @@ endef
 
 define MUPDF_INSTALL_TARGET_CMDS
 	$(MUPDF_MAKE_ENV) $(MAKE) -C $(@D) $(MUPDF_MAKE_OPTS) \
-		DESTDIR="$(TARGET_DIR)" install
+		DESTDIR="$(TARGET_DIR)" install-libs install-apps
 endef
 
 $(eval $(generic-package))

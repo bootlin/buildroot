@@ -4,14 +4,18 @@
 #
 ################################################################################
 
-SUDO_VERSION_MAJOR = 1.9.15
-SUDO_VERSION_MINOR = p5
+SUDO_VERSION_MAJOR = 1.9.17
+SUDO_VERSION_MINOR = p2
 SUDO_VERSION = $(SUDO_VERSION_MAJOR)$(SUDO_VERSION_MINOR)
 SUDO_SITE = https://www.sudo.ws/sudo/dist
 SUDO_LICENSE = ISC, BSD-3-Clause
 SUDO_LICENSE_FILES = LICENSE.md
 SUDO_CPE_ID_VERSION = $(SUDO_VERSION_MAJOR)
 SUDO_CPE_ID_UPDATE = $(SUDO_VERSION_MINOR)
+
+# 0001-exec-mailer-set-group-as-well-as-uid-when-running-the-mailer.patch
+SUDO_IGNORE_CVES += CVE-2026-35535
+
 SUDO_SELINUX_MODULES = sudo
 # This is to avoid sudo's make install from chown()ing files which fails
 SUDO_INSTALL_TARGET_OPTS = INSTALL_OWNER="" DESTDIR="$(TARGET_DIR)" install
@@ -35,6 +39,10 @@ SUDO_CONF_OPTS += --with-pam
 SUDO_POST_INSTALL_TARGET_HOOKS += SUDO_INSTALL_PAM_CONF
 else
 SUDO_CONF_OPTS += --without-pam
+endif
+
+ifeq ($(BR2_PACKAGE_LIBXCRYPT),y)
+SUDO_DEPENDENCIES += libxcrypt
 endif
 
 ifeq ($(BR2_PACKAGE_ZLIB),y)
@@ -73,7 +81,7 @@ define SUDO_USERS
 endef
 
 define SUDO_ENABLE_SUDO_GROUP_RULE
-	$(SED) '/^# \%sudo\tALL=(ALL:ALL) ALL/s/^# //' $(TARGET_DIR)/etc/sudoers
+	$(SED) '/^# \%sudo ALL=(ALL:ALL) ALL/s/^# //' $(TARGET_DIR)/etc/sudoers
 endef
 SUDO_POST_INSTALL_TARGET_HOOKS += SUDO_ENABLE_SUDO_GROUP_RULE
 

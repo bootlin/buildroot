@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-LIBSSH2_VERSION = 1.11.0
+LIBSSH2_VERSION = 1.11.1
 LIBSSH2_SOURCE= libssh2-$(LIBSSH2_VERSION).tar.xz
 LIBSSH2_SITE = https://www.libssh2.org/download
 LIBSSH2_LICENSE = BSD
@@ -13,8 +13,31 @@ LIBSSH2_CPE_ID_VENDOR = libssh2
 LIBSSH2_INSTALL_STAGING = YES
 LIBSSH2_CONF_OPTS = --disable-examples-build --disable-rpath
 
-# 0002-src-add-strict-KEX-to-fix-CVE-2023-48795-Terrapin-Attack.patch
-LIBSSH2_IGNORE_CVES += CVE-2023-48795
+# 0001-username-len-bound-checking.patch
+LIBSSH2_IGNORE_CVES += CVE-2026-7598
+
+# 0002-packet-check-libssh2-get-string-return-in-EXT-INFO-handler.patch
+LIBSSH2_IGNORE_CVES += CVE-2026-55199
+
+# 0003-transport-c-Additional-boundary-checks-for-packet-length.patch
+LIBSSH2_IGNORE_CVES += CVE-2026-55200
+
+# 0004-sftp-symlink-fix-out-of-bounds-read.patch
+# 0005-libssh2-priv-backport-LIBSSH2_UNCONST.patch
+# 0006-sftp-symlink-fix-SSH_FXP_STATUS-response.patch
+LIBSSH2_IGNORE_CVES += CVE-2025-15661
+
+# 0007-sftp-prevent-dangling-pointer-after-free.patch
+LIBSSH2_IGNORE_CVES += CVE-2026-66032
+
+# 0008-openssl-fix-AES-GCM-bounds-checks.patch
+LIBSSH2_IGNORE_CVES += CVE-2026-66033
+
+# 0009-publickey-fix-potential-OOB-read.patch
+LIBSSH2_IGNORE_CVES += CVE-2026-66034
+
+# 0010-transport-fix-potential-heap-overflow-on-ETM-decrypt.patch
+LIBSSH2_IGNORE_CVES += CVE-2026-66035
 
 ifeq ($(BR2_PACKAGE_LIBSSH2_MBEDTLS),y)
 LIBSSH2_DEPENDENCIES += mbedtls

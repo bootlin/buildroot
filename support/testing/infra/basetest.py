@@ -37,7 +37,6 @@ class BRConfigTest(unittest.TestCase):
         super(BRConfigTest, self).__init__(names)
         self.testname = self.__class__.__name__
         self.builddir = self.outputdir and os.path.join(self.outputdir, self.testname)
-        self.config += '\nBR2_BACKUP_SITE=""\n'
         self.config += '\nBR2_DL_DIR="{}"\n'.format(self.downloaddir)
         self.config += "\nBR2_JLEVEL={}\n".format(self.jlevel)
 
@@ -91,4 +90,15 @@ class BRTest(BRConfigTest):
             exit_code,
             0,
             "\nFailed to run: {}\noutput was:\n{}".format(cmd, '  '+'\n  '.join(out))
+        )
+
+    # Run the given 'cmd' with a 'timeout' on the target and
+    # assert that the command fails; on success, print the
+    # faulty command and its output
+    def assertRunNotOk(self, cmd, timeout=-1):
+        out, exit_code = self.emulator.run(cmd, timeout)
+        self.assertNotEqual(
+            exit_code,
+            0,
+            "\nUnexpected success: {}\noutput was:\n{}".format(cmd, '  '+'\n  '.join(out))
         )

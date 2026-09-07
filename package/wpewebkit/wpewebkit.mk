@@ -5,7 +5,7 @@
 ################################################################################
 
 # The middle number is even for stable releases, odd for development ones.
-WPEWEBKIT_VERSION = 2.44.4
+WPEWEBKIT_VERSION = 2.50.5
 WPEWEBKIT_SITE = https://wpewebkit.org/releases
 WPEWEBKIT_SOURCE = wpewebkit-$(WPEWEBKIT_VERSION).tar.xz
 WPEWEBKIT_INSTALL_STAGING = YES
@@ -16,10 +16,14 @@ WPEWEBKIT_LICENSE_FILES = \
 WPEWEBKIT_CPE_ID_VENDOR = wpewebkit
 WPEWEBKIT_CPE_ID_PRODUCT = wpe_webkit
 WPEWEBKIT_DEPENDENCIES = host-gperf host-python3 host-ruby host-unifdef \
-	harfbuzz cairo icu jpeg libepoxy libgcrypt libgles libsoup3 libtasn1 \
+	harfbuzz icu jpeg libepoxy libgcrypt libgles libsoup3 libtasn1 \
 	libpng libxslt wayland-protocols webp wpebackend-fdo
 
 WPEWEBKIT_CMAKE_BACKEND = ninja
+
+# Buildroot adds support for ccache through its
+# toolchain-wrapper, so tell wpewebkit not to mess with it.
+WPEWEBKIT_CONF_ENV = WK_USE_CCACHE=NO
 
 WPEWEBKIT_CONF_OPTS = \
 	-DPORT=WPE \
@@ -29,6 +33,16 @@ WPEWEBKIT_CONF_OPTS = \
 	-DENABLE_MINIBROWSER=OFF \
 	-DENABLE_WEB_RTC=OFF \
 	-DUSE_ATK=OFF
+
+# WPE WebKit uses a bundled copy of Skia since 2.46.0 for
+# little-endian targets, and Cairo for big-endian ones.
+ifeq ($(BR2_ENDIAN),"BIG")
+WPEWEBKIT_DEPENDENCIES += cairo
+WPEWEBKIT_CONF_OPTS += -DUSE_SKIA=OFF
+else
+WPEWEBKIT_DEPENDENCIES += fontconfig freetype
+WPEWEBKIT_CONF_OPTS += -DUSE_SKIA=ON
+endif
 
 ifeq ($(BR2_PACKAGE_WPEWEBKIT_SANDBOX),y)
 WPEWEBKIT_CONF_OPTS += \
@@ -79,6 +93,13 @@ else
 WPEWEBKIT_CONF_OPTS += -DENABLE_WEBDRIVER=OFF
 endif
 
+ifeq ($(BR2_PACKAGE_FLITE),y)
+WPEWEBKIT_CONF_OPTS += -DENABLE_SPEECH_SYNTHESIS=ON
+WPEWEBKIT_DEPENDENCIES += flite
+else
+WPEWEBKIT_CONF_OPTS += -DENABLE_SPEECH_SYNTHESIS=OFF
+endif
+
 ifeq ($(BR2_PACKAGE_LCMS2),y)
 WPEWEBKIT_CONF_OPTS += -DUSE_LCMS=ON
 WPEWEBKIT_DEPENDENCIES += lcms2
@@ -114,6 +135,13 @@ else
 WPEWEBKIT_CONF_OPTS += -DUSE_JPEGXL=OFF
 endif
 
+ifeq ($(BR2_PACKAGE_SYSPROF),y)
+WPEWEBKIT_CONF_OPTS += -DUSE_SYSPROF_CAPTURE=ON
+WPEWEBKIT_DEPENDENCIES += sysprof
+else
+WPEWEBKIT_CONF_OPTS += -DUSE_SYSPROF_CAPTURE=OFF
+endif
+
 ifeq ($(BR2_INIT_SYSTEMD),y)
 WPEWEBKIT_CONF_OPTS += -DENABLE_JOURNALD_LOG=ON
 WPEWEBKIT_DEPENDENCIES += systemd
@@ -128,18 +156,16 @@ else
 WPEWEBKIT_CONF_OPTS += -DUSE_GBM=OFF
 endif
 
-# JIT is not supported for MIPS r6, but the WebKit build system does not
-# have a check for these processors. The same goes for ARMv5 and ARMv6.
-# Disable JIT forcibly here and use the CLoop interpreter instead.
+# JIT is not supported for MIPS, ARMv5, and ARMv6, but the WebKit build
+# system does not have a check for some of these target processors.
 #
+# Disable JIT forcibly here and use the CLoop interpreter instead.
 # Also, we have to disable the sampling profiler and WebAssembly, which
 # do NOT work with ENABLE_C_LOOP.
 #
-# Upstream bugs: https://bugs.webkit.org/show_bug.cgi?id=191258
-#                https://bugs.webkit.org/show_bug.cgi?id=172765
-#                https://bugs.webkit.org/show_bug.cgi?id=265218
+# Upstream bug: https://bugs.webkit.org/show_bug.cgi?id=278559
 #
-ifeq ($(BR2_ARM_CPU_ARMV5)$(BR2_ARM_CPU_ARMV6)$(BR2_MIPS_CPU_MIPS32R6)$(BR2_MIPS_CPU_MIPS64R6),y)
+ifeq ($(BR2_ARM_CPU_ARMV5)$(BR2_ARM_CPU_ARMV6)$(BR2_mips)$(BR2_mipsel),y)
 WPEWEBKIT_CONF_OPTS += \
 	-DENABLE_JIT=OFF \
 	-DENABLE_C_LOOP=ON \

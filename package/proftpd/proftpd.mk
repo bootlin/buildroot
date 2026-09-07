@@ -4,12 +4,15 @@
 #
 ################################################################################
 
-PROFTPD_VERSION = 1.3.8b
+PROFTPD_VERSION = 1.3.8d
 PROFTPD_SITE = https://github.com/proftpd/proftpd/archive/v$(PROFTPD_VERSION)
 PROFTPD_LICENSE = GPL-2.0+
 PROFTPD_LICENSE_FILES = COPYING
 PROFTPD_CPE_ID_VENDOR = proftpd
 PROFTPD_SELINUX_MODULES = ftp
+
+# 0001-CVE-2026-42167.patch
+PROFTPD_IGNORE_CVES += CVE-2026-42167
 
 PROFTPD_CONF_ENV = \
 	ac_cv_func_setpgrp_void=yes \

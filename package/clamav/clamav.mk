@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-CLAMAV_VERSION = 1.0.8
+CLAMAV_VERSION = 1.4.3
 CLAMAV_SITE = https://www.clamav.net/downloads/production
 CLAMAV_LICENSE = GPL-2.0
 CLAMAV_LICENSE_FILES = \
@@ -23,6 +23,46 @@ CLAMAV_CPE_ID_VENDOR = clamav
 CLAMAV_SELINUX_MODULES = clamav
 # affects only Cisco devices
 CLAMAV_IGNORE_CVES += CVE-2016-1405
+
+# 0001-fix-possible-panic-when-scanning-some-html-files.patch
+CLAMAV_IGNORE_CVES += CVE-2026-20031
+
+# 0002-libclamav-fix-pespin-cleanup-bitmap-tracking-47.patch
+CLAMAV_IGNORE_CVES += CVE-2026-20217
+
+# 0003-libclamav-fix-aspack-triggered-rebuild-pe-overflow-49.patch
+CLAMAV_IGNORE_CVES += CVE-2026-20213
+
+# 0004-libclamav-enforce-installshield-extraction-limits-55.patch
+CLAMAV_IGNORE_CVES += CVE-2026-20216
+
+# 0005-libclamav-fix-fsg-section-loop-underflow-51.patch
+CLAMAV_IGNORE_CVES += CVE-2026-20214
+
+# 0006-fix-alz-parser-robustness-and-scan-coverage-63.patch
+CLAMAV_IGNORE_CVES += CVE-2026-20243
+
+# 0007-libclamav-fix-7z-substream-count-overflow-53.patch
+CLAMAV_IGNORE_CVES += CVE-2026-20215
+
+# 0008-fix-32-bit-dmg-mish-size-checks-65.patch
+CLAMAV_IGNORE_CVES += CVE-2026-20244
+
+# 0010-libclamav-fix-gpt-partition-name-conversion-index-103.patch
+CLAMAV_IGNORE_CVES += CVE-2026-20345
+
+# 0011-libclamav-fix-pespin-rebuilt-section-size-overflow-101.patch
+CLAMAV_IGNORE_CVES += CVE-2026-20339
+
+# 0012-libclamav-guard-pdf-hex-string-newline-skip-98.patch
+CLAMAV_IGNORE_CVES += CVE-2026-20346
+
+# 0013-libclamav-harden-mach-o-section-validation-96.patch
+CLAMAV_IGNORE_CVES += CVE-2026-20347
+
+# 0014-libclamav-enforce-xar-limits-against-inflated-toc-size.patch
+CLAMAV_IGNORE_CVES += CVE-2026-20348
+
 CLAMAV_DEPENDENCIES = \
 	bzip2 \
 	host-pkgconf \

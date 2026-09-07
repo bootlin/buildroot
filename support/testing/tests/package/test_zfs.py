@@ -63,6 +63,7 @@ class TestZfsBase(infra.basetest.BRTest):
             self.assertRunOk(cmd, timeout=self.timeout)
 
 
+# gitlab-runner: medium
 class TestZfsGlibc(TestZfsBase):
     config = TestZfsBase.config + \
         """
@@ -73,16 +74,27 @@ class TestZfsGlibc(TestZfsBase):
         TestZfsBase.base_test_run(self)
 
 
+# gitlab-runner: large
 class TestZfsUclibc(TestZfsBase):
-    config = TestZfsBase.config + \
+    # The Bootling aarch64 uclibc stable 2025.08-1 needs to be
+    # rebuild with uClibc-ng 1.0.55.
+    # See: https://github.com/wbx-github/uclibc-ng/commit/94c1297d52263e20cd9715601afa37f49d008d93
+    config = TestZfsBase.config.replace('BR2_TOOLCHAIN_EXTERNAL=y\n', '')
+    config = config.replace('BR2_TOOLCHAIN_EXTERNAL_BOOTLIN=y\n', '') + \
         """
-        BR2_TOOLCHAIN_EXTERNAL_BOOTLIN_AARCH64_UCLIBC_STABLE=y
+        BR2_TOOLCHAIN_BUILDROOT_UCLIBC=y
+        BR2_KERNEL_HEADERS_5_4=y
+        BR2_TOOLCHAIN_BUILDROOT_LOCALE=y
+        BR2_PTHREAD_DEBUG=y
+        BR2_TOOLCHAIN_BUILDROOT_CXX=y
+        BR2_GCC_ENABLE_OPENMP=y
         """
 
     def test_run(self):
         TestZfsBase.base_test_run(self)
 
 
+# gitlab-runner: medium
 class TestZfsMusl(TestZfsBase):
     config = TestZfsBase.config + \
         """

@@ -10,6 +10,9 @@ RTL_433_LICENSE = GPL-2.0+
 RTL_433_LICENSE_FILES = COPYING
 RTL_433_CPE_ID_VALID = YES
 
+# 0002-Fix-overflow-in-rfraw-test-data-parsing.patch
+RTL_433_IGNORE_CVES += CVE-2025-34450
+
 # Force Release build to remove ASAN.
 RTL_433_CONF_OPTS = \
 	-DCMAKE_BUILD_TYPE=Release \
@@ -17,6 +20,9 @@ RTL_433_CONF_OPTS = \
 	-DBUILD_TESTING=OFF \
 	-DBUILD_TESTING_ANALYZER=OFF \
 	-DENABLE_SOAPYSDR=OFF
+
+# do not include Buildroot git info in version output
+RTL_433_CONF_ENV = GIT_DIR=.
 
 ifeq ($(BR2_PACKAGE_LIBRTLSDR),y)
 RTL_433_DEPENDENCIES += librtlsdr

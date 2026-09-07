@@ -4,12 +4,22 @@
 #
 ################################################################################
 
-GIFLIB_VERSION = 5.2.2
-GIFLIB_SITE = http://downloads.sourceforge.net/project/giflib
+GIFLIB_VERSION_MAJOR = 5
+GIFLIB_VERSION = $(GIFLIB_VERSION_MAJOR).2.2
+GIFLIB_SITE = https://sourceforge.net/projects/giflib/files/giflib-$(GIFLIB_VERSION_MAJOR).x
 GIFLIB_INSTALL_STAGING = YES
 GIFLIB_LICENSE = MIT
 GIFLIB_LICENSE_FILES = COPYING
 GIFLIB_CPE_ID_VALID = YES
+
+# 0003-CVE-2021-40633.patch
+GIFLIB_IGNORE_CVES += CVE-2021-40633
+
+# 0004-CVE-2025-31344.patch
+GIFLIB_IGNORE_CVES += CVE-2025-31344
+
+# 0005-CVE-2026-23868.patch
+GIFLIB_IGNORE_CVES += CVE-2026-23868
 
 ifeq ($(BR2_STATIC_LIBS),y)
 GIFLIB_BUILD_LIBS = static-lib

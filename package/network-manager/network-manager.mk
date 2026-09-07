@@ -16,7 +16,6 @@ NETWORK_MANAGER_CPE_ID_PRODUCT = networkmanager
 NETWORK_MANAGER_SELINUX_MODULES = networkmanager
 
 NETWORK_MANAGER_DEPENDENCIES = \
-	host-intltool \
 	host-libxslt \
 	host-pkgconf \
 	dbus \
@@ -128,6 +127,10 @@ NETWORK_MANAGER_DEPENDENCIES += newt
 NETWORK_MANAGER_CONF_OPTS += -Dnmtui=true
 else
 NETWORK_MANAGER_CONF_OPTS += -Dnmtui=false
+endif
+
+ifeq ($(BR2_PACKAGE_NFTABLES),y)
+NETWORK_MANAGER_CONF_OPTS += -Dnft=/usr/sbin/nft
 endif
 
 ifeq ($(BR2_PACKAGE_OFONO),y)

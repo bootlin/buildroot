@@ -20,8 +20,8 @@ FRR_LICENSE_FILES = \
 # tools/gcc-plugins/frr-format.[ch] is not enabled by frr's ./configure, so gcc's
 # GPLv3 does not apply
 #	doc/licenses/GPL-3.0
-FRR_CPE_ID_VENDOR = linuxfoundation
-FRR_CPE_ID_PRODUCT = free_range_routing
+FRR_CPE_ID_VENDOR = frrouting
+FRR_CPE_ID_PRODUCT = frrouting
 FRR_AUTORECONF = YES
 
 FRR_DEPENDENCIES = host-frr readline json-c libyang \
@@ -121,6 +121,13 @@ endef
 define FRR_INSTALL_INIT_SYSV
 	$(INSTALL) -D -m 755 $(FRR_PKGDIR)/S50frr \
 		$(TARGET_DIR)/etc/init.d/S50frr
+endef
+
+define FRR_INSTALL_INIT_SYSTEMD
+	$(INSTALL) -D -m 644 $(@D)/tools/frr.service \
+		$(TARGET_DIR)/usr/lib/systemd/system/frr.service
+	$(INSTALL) -D -m 644 $(@D)/tools/frr@.service \
+		$(TARGET_DIR)/usr/lib/systemd/system/frr@.service
 endef
 
 $(eval $(autotools-package))

@@ -22,6 +22,17 @@ ifeq ($(BR2_ARM_INSTRUCTIONS_THUMB),y)
 LIBGLIB2_CFLAGS += -marm
 endif
 
+# 0001-gstring-Fix-overflow-check-when-expanding-the-string.patch
+LIBGLIB2_IGNORE_CVES += CVE-2025-6052
+
+# 0002-gfileutils-fix-computation-of-temporary-file-name.patch
+LIBGLIB2_IGNORE_CVES += CVE-2025-7039
+
+# 0003-gvariant-parser-Fix-potential-integer-overflow-parsi.patch
+# 0004-gvariant-parser-Use-size_t-to-count-numbers-of-child.patch
+# 0005-gvariant-parser-Convert-error-handling-code-to-use-s.patch
+LIBGLIB2_IGNORE_CVES += CVE-2025-14087
+
 HOST_LIBGLIB2_CONF_OPTS = \
 	-Ddtrace=false \
 	-Dglib_debug=disabled \
@@ -30,7 +41,8 @@ HOST_LIBGLIB2_CONF_OPTS = \
 	-Dsystemtap=false \
 	-Dxattr=false \
 	-Dtests=false \
-	-Doss_fuzz=disabled
+	-Doss_fuzz=disabled \
+	-Dsysprof=disabled
 
 LIBGLIB2_DEPENDENCIES = \
 	host-pkgconf host-libglib2 \

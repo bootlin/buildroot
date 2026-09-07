@@ -5,6 +5,7 @@ import infra.basetest
 from ..graphics_base import GraphicsBase
 
 
+# gitlab-runner: 2xlarge
 class TestFlutter(infra.basetest.BRTest, GraphicsBase):
     config = f"""
         BR2_aarch64=y
@@ -48,8 +49,6 @@ class TestFlutter(infra.basetest.BRTest, GraphicsBase):
                      "-cpu", "cortex-a57",
                      "-m", "512M",
                      "-smp", "4",
-                     "-vga", "std",
-                     "-vnc", "none",
                      "-drive", f"file={img},if=virtio,format=raw"])
         self.emulator.login()
 

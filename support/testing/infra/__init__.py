@@ -6,7 +6,7 @@ import subprocess
 from urllib.request import urlopen
 from urllib.error import HTTPError, URLError
 
-ARTIFACTS_URL = "http://autobuild.buildroot.net/artefacts/"
+ARTIFACTS_URL = "https://autobuild.buildroot.org/artefacts/"
 BASE_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), "../../.."))
 
 
@@ -59,11 +59,25 @@ def download(dldir, filename):
 
 def run_cmd_on_host(builddir, cmd):
     """Call subprocess.check_output and return the text output."""
-    out = subprocess.check_output(cmd,
-                                  stderr=open(os.devnull, "w"),
-                                  cwd=builddir,
-                                  env={"LANG": "C"},
-                                  universal_newlines=True)
+    try:
+        host_bin = os.path.join(builddir, "host", "bin")
+        br_path = host_bin + os.pathsep + os.environ["PATH"]
+        out = subprocess.check_output(cmd,
+                                      cwd=builddir,
+                                      env={
+                                          "LANG": "C",
+                                          "PATH": br_path
+                                      },
+                                      stderr=subprocess.STDOUT,
+                                      text=True,
+                                      universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Command failed with return code {e.returncode}")
+        print("=== STDOUT/STDERR ===")
+        print(e.output)
+        print("=====================")
+        raise
+
     return out
 
 

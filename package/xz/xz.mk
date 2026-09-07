@@ -9,7 +9,7 @@ XZ_SOURCE = xz-$(XZ_VERSION).tar.bz2
 XZ_SITE = https://github.com/tukaani-project/xz/releases/download/v$(XZ_VERSION)
 XZ_INSTALL_STAGING = YES
 XZ_CONF_ENV = ac_cv_prog_cc_c99='-std=gnu99'
-XZ_LICENSE = Public Domain, BSD-0-Clause, GPL-2.0+, GPL-3.0+, LGPL-2.1+
+XZ_LICENSE = 0BSD, GPL-2.0+, GPL-3.0+, LGPL-2.1+, FSFUL, FSFULLR, Public Domain
 XZ_LICENSE_FILES = COPYING COPYING.0BSD COPYING.GPLv2 COPYING.GPLv3 COPYING.LGPLv2.1
 XZ_CPE_ID_VENDOR = tukaani
 # autoreconf needed to fix a musl static build failure
@@ -22,7 +22,10 @@ HOST_XZ_ADD_CCACHE_DEPENDENCY = NO
 # 0002-liblzma-mt-dec-Simplify-by-removing-the-THR_STOP-sta.patch
 # 0003-liblzma-mt-dec-Don-t-free-the-input-buffer-too-early.patch
 # 0004-liblzma-mt-dec-Don-t-modify-thr-in_size-in-the-worke.patch
-XZ_IGNORE_CVES = CVE-2025-31115
+XZ_IGNORE_CVES += CVE-2025-31115
+
+# 0005-liblzma-Fix-a-buffer-overflow-in-lzma-index-append.patch
+XZ_IGNORE_CVES += CVE-2026-34743
 
 XZ_CONF_OPTS = \
 	--enable-encoders=lzma1,lzma2,delta,x86,powerpc,ia64,arm,armthumb,arm64,sparc,riscv \

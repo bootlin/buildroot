@@ -18,10 +18,10 @@ Signed-off-by: Bernd Kuhls <bernd.kuhls@t-online.de>
  1 file changed, 4 insertions(+)
 
 diff --git a/Configure b/Configure
-index 5a699836f3..f9152b1702 100755
+index 1b020faadb..4614b5becf 100755
 --- a/Configure
 +++ b/Configure
-@@ -1549,6 +1549,10 @@ unless ($disabled{asm}) {
+@@ -1691,6 +1691,10 @@ unless ($disabled{asm}) {
      }
  }
  
