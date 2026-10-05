@@ -3,6 +3,7 @@ import os
 import infra.basetest
 
 
+# gitlab-runner: xlarge
 class TestOctave(infra.basetest.BRTest):
     # infra.basetest.BASIC_TOOLCHAIN_CONFIG cannot be used as it does
     # not include gfortran.
@@ -50,8 +51,7 @@ class TestOctave(infra.basetest.BRTest):
 
         # Check octave can fail
         cmd = self.octave_cmd("assert(false)")
-        _, exit_code = self.emulator.run(cmd)
-        self.assertNotEqual(exit_code, 0)
+        self.assertRunNotOk(cmd)
 
         # Check string output
         string = "Hello World"

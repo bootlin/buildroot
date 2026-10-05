@@ -4,13 +4,17 @@
 #
 ################################################################################
 
-DRACUT_VERSION = 059
-DRACUT_SITE = $(call github,dracutdevs,dracut,$(DRACUT_VERSION))
+DRACUT_VERSION = 112
+DRACUT_SITE = $(call github,dracut-ng,dracut,$(DRACUT_VERSION))
 DRACUT_LICENSE = GPL-2.0
 DRACUT_LICENSE_FILES = COPYING
 DRACUT_CPE_ID_VALID = YES
 
 HOST_DRACUT_DEPENDENCIES = host-pkgconf host-kmod host-cross-ldd
+# Dracut is not a real autotools package, and the hand-written
+# ./configure script does not preserve LDFLAGS for make.
+HOST_DRACUT_MAKE_ENV = $(HOST_CONFIGURE_OPTS)
+HOST_DRACUT_INSTALL_OPTS = systemdsystemunitdir="" install
 
 define HOST_DRACUT_POST_INSTALL_WRAPPER_SCRIPT
 	mv $(HOST_DIR)/bin/dracut $(HOST_DIR)/bin/dracut.real

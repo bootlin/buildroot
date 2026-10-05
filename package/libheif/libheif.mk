@@ -4,14 +4,13 @@
 #
 ################################################################################
 
-LIBHEIF_VERSION = 1.20.1
+LIBHEIF_VERSION = 1.23.3
 LIBHEIF_SITE = https://github.com/strukturag/libheif/releases/download/v$(LIBHEIF_VERSION)
 LIBHEIF_LICENSE = LGPL-3.0+
 LIBHEIF_LICENSE_FILES = COPYING
 LIBHEIF_CPE_ID_VENDOR = struktur
 LIBHEIF_INSTALL_STAGING = YES
 LIBHEIF_CONF_OPTS = \
-	-DCMAKE_CXX_FLAGS="-std=c++11" \
 	-DENABLE_PLUGIN_LOADING=OFF \
 	-DWITH_AOM_DECODER=OFF \
 	-DWITH_AOM_ENCODER=OFF \

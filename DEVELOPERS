@@ -676,19 +676,6 @@ F:	package/perl-sys-mmap/
 F:	package/perl-time-parsedate/
 F:	package/perl-x10/
 
-N:	Clayton Shotwell <clayton.shotwell@collins.com>
-F:	package/audit/
-F:	package/checkpolicy/
-F:	package/cpio/
-F:	package/libcgroup/
-F:	package/libee/
-F:	package/libestr/
-F:	package/liblogging/
-F:	package/libselinux/
-F:	package/libsemanage/
-F:	package/libsepol/
-F:	package/policycoreutils/
-
 N:	Colin Foster <colin.foster@in-advantage.com>
 F:	package/python-tftpy/
 F:	package/rauc-hawkbit-updater/
@@ -940,7 +927,7 @@ F:	package/optee-client/
 F:	package/optee-examples/
 F:	package/optee-test/
 
-N:	Eugen Hristev <eugen.hristev@microchip.com>
+N:	Eugen Hristev <ehristev@kernel.org>
 F:	board/atmel/readme.txt
 F:	board/microchip/sama7g5ek/
 F:	configs/microchip_sama7g5ek*
@@ -1121,13 +1108,17 @@ F:	package/tbb/
 N:	Francisco Gonzalez <gzmorell@gmail.com>
 F:	package/ser2net/
 
+N:	Franciszek Stachura <fbstachura@gmail.com>
+F:	support/testing/tests/package/test_memcached.py
+F:	support/testing/tests/package/test_nano.py
+
 N:	Francois Dugast <francois.dugast.foss@gmail.com>
 F:	board/sipeed/licheepi_nano/
 F:	board/visionfive2/
 F:	configs/sipeed_licheepi_nano_defconfig
 F:	configs/visionfive2_defconfig
 
-N:	Francois Perrad <francois.perrad@gadz.org>
+N:	Francois Perrad <francois.perrad.86@gmail.com>
 F:	board/olimex/a20_olinuxino
 F:	board/olimex/imx233_olinuxino/
 F:	board/olimex/stmp1_olinuxino/
@@ -1299,6 +1290,7 @@ F:	package/udisks/
 F:	package/util-linux/
 F:	package/vim/
 F:	package/wilc-driver/
+F:	package/wireshark/
 F:	package/zlib-ng/
 F:	toolchain/
 
@@ -1614,6 +1606,7 @@ F:	package/ssdp-responder/
 F:	package/sysklogd/
 F:	package/uredir/
 F:	package/watchdogd/
+F:	support/testing/tests/package/test_mdnsd.py
 
 N:	Jochen Baltes <jochen.baltes@gmail.com>
 F:	package/altera-stapl
@@ -1668,10 +1661,6 @@ F:	package/vuejs/
 
 N:	John Stile <johns@msli.com>
 F:	package/dhcpcd/
-
-N:	John Faith <jfaith@impinj.com>
-F:	package/python-inflection/
-F:	package/sdbusplus/
 
 N:	Jon Ringle <jringle@gridpoint.com>
 F:	package/mbpoll/
@@ -1798,6 +1787,8 @@ F:	support/testing/tests/boot/test_optee_os.py
 F:	support/testing/tests/boot/test_optee_os/
 F:	support/testing/tests/fs/test_btrfs.py
 F:	support/testing/tests/fs/test_btrfs/
+F:	support/testing/tests/fs/test_cramfs.py
+F:	support/testing/tests/fs/test_cramfs/
 F:	support/testing/tests/fs/test_erofs.py
 F:	support/testing/tests/fs/test_erofs/
 F:	support/testing/tests/package/sample_python_distro.py
@@ -1807,6 +1798,7 @@ F:	support/testing/tests/package/sample_python_midiutil.py
 F:	support/testing/tests/package/sample_python_ml_dtypes.py
 F:	support/testing/tests/package/sample_python_mpmath.py
 F:	support/testing/tests/package/sample_python_pyalsa.py
+F:	support/testing/tests/package/sample_python_pydal.py
 F:	support/testing/tests/package/sample_python_spake2.py
 F:	support/testing/tests/package/sample_python_sympy.py
 F:	support/testing/tests/package/test_4th.py
@@ -1826,6 +1818,7 @@ F:	support/testing/tests/package/test_btrfs_progs.py
 F:	support/testing/tests/package/test_btrfs_progs/
 F:	support/testing/tests/package/test_bzip2.py
 F:	support/testing/tests/package/test_compressor_base.py
+F:	support/testing/tests/package/test_connman.py
 F:	support/testing/tests/package/test_coremark.py
 F:	support/testing/tests/package/test_cryptsetup.py
 F:	support/testing/tests/package/test_cryptsetup/
@@ -1863,6 +1856,8 @@ F:	support/testing/tests/package/test_gnuradio/
 F:	support/testing/tests/package/test_gpsd.py
 F:	support/testing/tests/package/test_gpsd/
 F:	support/testing/tests/package/test_gstreamer1.py
+F:	support/testing/tests/package/test_guile.py
+F:	support/testing/tests/package/test_guile/
 F:	support/testing/tests/package/test_gzip.py
 F:	support/testing/tests/package/test_highway.py
 F:	support/testing/tests/package/test_hwloc.py
@@ -1890,6 +1885,8 @@ F:	support/testing/tests/package/test_libcamera.py
 F:	support/testing/tests/package/test_libcamera/
 F:	support/testing/tests/package/test_libcurl.py
 F:	support/testing/tests/package/test_libgpgme.py
+F:	support/testing/tests/package/test_libgpiod2.py
+F:	support/testing/tests/package/test_libgpiod2/
 F:	support/testing/tests/package/test_libjxl.py
 F:	support/testing/tests/package/test_lighttpd.py
 F:	support/testing/tests/package/test_links.py
@@ -1938,6 +1935,8 @@ F:	support/testing/tests/package/test_patch.py
 F:	support/testing/tests/package/test_patch/
 F:	support/testing/tests/package/test_pciutils.py
 F:	support/testing/tests/package/test_perftest.py
+F:	support/testing/tests/package/test_php.py
+F:	support/testing/tests/package/test_php/
 F:	support/testing/tests/package/test_pigz.py
 F:	support/testing/tests/package/test_postgresql.py
 F:	support/testing/tests/package/test_pppd.py
@@ -1953,10 +1952,13 @@ F:	support/testing/tests/package/test_python_midiutil.py
 F:	support/testing/tests/package/test_python_ml_dtypes.py
 F:	support/testing/tests/package/test_python_mpmath.py
 F:	support/testing/tests/package/test_python_pyalsa.py
+F:	support/testing/tests/package/test_python_pydal.py
 F:	support/testing/tests/package/test_python_pyqt5.py
 F:	support/testing/tests/package/test_python_pyqt5/
 F:	support/testing/tests/package/test_python_spake2.py
 F:	support/testing/tests/package/test_python_sympy.py
+F:	support/testing/tests/package/test_quickjs.py
+F:	support/testing/tests/package/test_quickjs/
 F:	support/testing/tests/package/test_rdma_core.py
 F:	support/testing/tests/package/test_rdma_core/
 F:	support/testing/tests/package/test_rrdtool.py
@@ -1990,6 +1992,8 @@ F:	support/testing/tests/package/test_weston/
 F:	support/testing/tests/package/test_wget.py
 F:	support/testing/tests/package/test_which.py
 F:	support/testing/tests/package/test_wine.py
+F:	support/testing/tests/package/test_wpa_supplicant.py
+F:	support/testing/tests/package/test_wpa_supplicant/
 F:	support/testing/tests/package/test_xfsprogs.py
 F:	support/testing/tests/package/test_xfsprogs/
 F:	support/testing/tests/package/test_xvisor.py
@@ -2155,6 +2159,17 @@ F:	package/mpv/
 F:	package/rpi-firmware/
 F:	package/rpi-userland/
 
+N:	Manuel Diener <manuel.diener@oss.othermo.de>
+F:	package/pico-sdk/
+F:	package/picotool/
+F:	package/python-django/
+F:	package/python-immutabledict/
+F:	package/python-jc/
+F:	package/python-pydantic/
+F:	package/python-pydantic-core/
+F:	package/python-pydantic-settings/
+F:	package/python-waitress/
+
 N:	Marcin Bis <marcin@bis.org.pl>
 F:	package/bluez5_utils/
 F:	package/cc-tool/
@@ -2167,10 +2182,10 @@ F:	board/orangepi/orangepi-zero3/
 F:	configs/grinn_*
 F:	configs/orangepi_zero_plus_defconfig
 F:	configs/orangepi_zero3_defconfig
-F:	package/argparse/
 F:	package/dt-utils/
 F:	package/easydbus/
 F:	package/gitlab-runner/
+F:	package/lua-argparse/
 F:	package/lua-flu/
 F:	package/lua-stdlib/
 F:	package/luaossl/
@@ -2214,29 +2229,14 @@ F:	utils/diffconfig
 
 N:	Marcus Hoffmann <bubu@bubu1.eu>
 F:	package/nethogs/
-F:	package/pico-sdk/
-F:	package/picotool/
 F:	package/python-django/
-F:	package/python-immutabledict/
 F:	package/python-jc/
-F:	package/python-pydantic/
-F:	package/python-pydantic-core/
-F:	package/python-pydantic-settings/
-F:	package/python-ruamel-yaml-clib/
 F:	package/python-waitress/
 F:	support/testing/tests/package/test_python_django.py
-F:	support/testing/tests/package/test_python_fastapi.py
-F:	support/testing/tests/package/test_python_pydantic.py
-F:	support/testing/tests/package/test_python_pydantic_settings.py
 F:	support/testing/tests/package/test_python_requests.py
-F:	support/testing/tests/package/test_python_ruamel_yaml.py
 F:	support/testing/tests/package/test_python_waitress.py
 F:	support/testing/tests/package/sample_python_django.py
-F:	support/testing/tests/package/sample_python_fastapi.py
-F:	support/testing/tests/package/sample_python_pydantic.py
-F:	support/testing/tests/package/sample_python_pydantic_settings.py
 F:	support/testing/tests/package/sample_python_requests.py
-F:	support/testing/tests/package/sample_python_ruamel_yaml.py
 
 N:	Marek Belisko <marek.belisko@open-nandra.com>
 F:	package/libatasmart/
@@ -2286,7 +2286,6 @@ F:	package/python-webargs/
 N:	Martin Kepplinger <martink@posteo.de>
 F:	package/tslib/
 F:	package/x11r7/xdriver_xf86-input-tslib/
-F:	package/x11vnc/
 
 N:	Martin Povišer <povik+lin@cutebit.org>
 F:	package/python-construct/
@@ -2302,26 +2301,6 @@ F:	package/gtkiostream/
 
 N:	Matt Silva <dev@matt-silva.com>
 F:	package/rlwrap/
-
-N:	Mauro Condarelli <mc5686@mclink.it>
-F:	package/mc/
-F:	package/python-autobahn/
-F:	package/python-cbor/
-F:	package/python-characteristic/
-F:	package/python-click/
-F:	package/python-lmdb/
-F:	package/python-mistune/
-F:	package/python-netaddr/
-F:	package/python-pygments/
-F:	package/python-pynacl/
-F:	package/python-pytrie/
-F:	package/python-service-identity/
-F:	package/python-setproctitle/
-F:	package/python-shutilwhich/
-F:	package/python-treq/
-F:	package/python-txaio/
-F:	package/python-ujson/
-F:	package/python-wsaccel/
 
 N:	Maksim Kiselev <bigunclemax@gmail.com>
 F:	package/ledmon/
@@ -2437,6 +2416,7 @@ F:	package/binutils-bare-metal/
 F:	package/bootgen/
 F:	package/gcc-bare-metal/
 F:	package/newlib-bare-metal/
+F:	package/xen/
 F:	toolchain/toolchain-bare-metal-buildroot/
 
 N:	Nicola Di Lieto <nicola.dilieto@gmail.com>
@@ -2621,6 +2601,7 @@ F:	package/triggerhappy/
 F:	package/wireguard-linux-compat/
 F:	package/wireguard-tools/
 F:	support/testing/tests/package/test_docker_compose.py
+F:	support/testing/tests/package/test_haproxy.py
 F:	support/testing/tests/package/test_python_hid.py
 
 N:	Peter Seiderer <ps.report@gmx.net>
@@ -2706,10 +2687,6 @@ F:	package/synergy/
 
 N:	Qais Yousef <qais.yousef@arm.com>
 F:	package/bpftrace/
-
-N:	Rafal Susz <rafal.susz@gmail.com>
-F:	board/avnet/s6lx9_microboard/
-F:	configs/s6lx9_microboard_defconfig
 
 N:	Rafał Miłecki <rafal@milecki.pl>
 F:	board/broadcom/northstar/
@@ -2969,6 +2946,14 @@ F:	package/tunctl/
 F:	package/ubus/
 F:	package/wolfssl/
 
+N:	Shubham Chakraborty <chakrabortyshubham66@gmail.com>
+F:	package/ccache/
+F:	package/dos2unix/
+F:	package/htop/
+F:	package/pv/
+F:	package/unrar/
+F:	package/xterm/
+
 N:	Simon Dawson <spdawson@gmail.com>
 F:	boot/at91bootstrap3/
 F:	package/cppzmq/
@@ -3201,6 +3186,8 @@ F:	support/testing/tests/package/sample_python_flask.py
 F:	support/testing/tests/package/sample_python_flask_expects_json.py
 F:	support/testing/tests/package/sample_python_git.py
 F:	support/testing/tests/package/sample_python_unittest_xml_reporting.py
+F:	support/testing/tests/package/test_bpftrace.py
+F:	support/testing/tests/package/test_bpftrace/linux-bpftrace.fragment
 F:	support/testing/tests/package/test_nodejs.py
 F:	support/testing/tests/package/test_python_augeas.py
 F:	support/testing/tests/package/test_python_flask.py
@@ -3253,7 +3240,8 @@ F:	package/llvm-project/llvm/
 N:	Vanya Sergeev <vsergeev@gmail.com>
 F:	package/lua-periphery/
 
-N:	Viacheslav Bocharov <adeep@lexina.in>
+N:	Viacheslav Bocharov <v@baodeep.com>
+F:	package/amlogic-boot-fip/
 F:	package/rtl8822cs/
 
 N:	Victor Huesca <victor.huesca@bootlin.com>
@@ -3271,9 +3259,11 @@ F:	package/nss-myhostname/
 F:	package/utp_com/
 
 N:	Vincent Stehlé <vincent.stehle@arm.com>
+F:	board/aarch64-efi/
 F:	board/arm/fvp-ebbr/
 F:	board/qemu/aarch64-ebbr/
 F:	board/qemu/arm-ebbr/
+F:	configs/aarch64_efi_defconfig
 F:	configs/arm_fvp_ebbr_defconfig
 F:	configs/qemu_aarch64_ebbr_defconfig
 F:	configs/qemu_arm_ebbr_defconfig
@@ -3299,10 +3289,6 @@ F:	support/testing/tests/package/test_zerofree.py
 N:	Vinicius Tinti <viniciustinti@gmail.com>
 F:	package/python-thrift/
 
-N:	Vivien Didelot <vivien.didelot@gmail.com>
-F:	board/technologic/ts5500/
-F:	configs/ts5500_defconfig
-
 N:	Volkov Viacheslav <sv99@inbox.ru>
 F:	package/v4l2grab/
 F:	package/zbar/
@@ -3324,7 +3310,6 @@ F:	package/mksh/
 F:	package/ruby/
 F:	package/uclibc/
 F:	package/uclibc-ng-test/
-F:	package/zabbix/
 F:	support/testing/tests/package/test_ruby.py
 
 N:	Will Newton <will.newton@gmail.com>
